@@ -182,6 +182,42 @@ input::placeholder{color:var(--line2)}
 .ex small{display:block;color:var(--muted);font-size:.78rem;font-weight:400}
 .ex span:last-child{font-variant-numeric:tabular-nums;font-weight:600;color:var(--ink);white-space:nowrap}
 .restart{margin-top:18px;text-align:center}
+/* full edition */
+.full .fhead{display:flex;justify-content:space-between;align-items:flex-end;gap:16px;flex-wrap:wrap}
+.prog{display:flex;align-items:center;gap:14px;margin-top:18px}
+.pbar2{flex:1;height:8px;border-radius:4px;background:var(--line);overflow:hidden}.pbar2 i{display:block;height:100%;background:var(--accent);border-radius:4px;transition:width .3s}
+.prog span{font-size:.8rem;color:var(--muted);font-variant-numeric:tabular-nums;white-space:nowrap}
+.ustrip{display:flex;gap:6px;overflow-x:auto;padding:18px 0 10px;scrollbar-width:none}.ustrip::-webkit-scrollbar{display:none}
+.ub{flex:none;width:44px;height:44px;border-radius:12px;border:1px solid var(--line);background:var(--paper);font:inherit;font-weight:600;color:var(--muted);cursor:pointer;font-variant-numeric:tabular-nums}
+.ub.ok{background:var(--soft);color:var(--accent);border-color:transparent}
+.ub[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.unit{margin-top:14px;padding-top:22px;border-top:1px solid var(--line)}
+.uh{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;flex-wrap:wrap}
+.uh h3{font-size:1.7rem;margin-top:4px}
+.donebox{display:flex;align-items:center;gap:8px;font-weight:600;font-size:.9rem;padding:10px 14px;border:1px solid var(--line);border-radius:999px;cursor:pointer;background:var(--paper)}
+.donebox input,.todo input{width:20px;height:20px;accent-color:var(--accent);margin:0;flex:none}
+.fe{margin-top:22px}.fe h4{font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);font-weight:600;margin:0 0 8px}
+.fe p{font-size:1rem}
+.todo{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px}
+.todo label{display:flex;gap:12px;align-items:flex-start;padding:12px 14px;border:1px solid var(--line);border-radius:12px;background:var(--paper);cursor:pointer;font-size:.98rem;line-height:1.4}
+.todo input:checked+span{color:var(--muted);text-decoration:line-through}
+.fn{padding:14px 16px;border-left:3px solid var(--accent);background:var(--soft);border-radius:0 10px 10px 0;font-size:.95rem;line-height:1.5}
+.fn b{display:block;font-size:.7rem;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);margin-bottom:4px}
+.jp{font-family:var(--serif);font-style:italic;font-size:1.25rem;color:var(--ink);margin-bottom:10px}
+.jt{width:100%;min-height:110px;font:inherit;font-size:.98rem;padding:14px;border:1px solid var(--line);border-radius:12px;background:var(--paper);color:var(--fg);resize:vertical}
+.unav{display:flex;justify-content:space-between;gap:10px;margin-top:26px;flex-wrap:wrap}
+.btn.sm{padding:9px 16px;font-size:.84rem}
+@media print{
+  body{padding:0;background:#fff;color:#111}
+  nav,.cover::before,.buy,.restart,.ustrip,.unav,.fact,.prog,#home,#code,#ask,#gen{display:none!important}
+  .cover{border-radius:0;min-height:0;padding:40px;color:#fff;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .spread{border:0;padding:0 0 24px;break-inside:avoid}
+  .unit{break-inside:avoid;page-break-inside:avoid;border-top:1px solid #ddd}
+  .todo label{border:1px solid #ddd}.todo input{-webkit-print-color-adjust:exact}
+  .jt{min-height:120px;border:1px solid #ccc}
+  .day,.sheet{box-shadow:none}
+}
+
 @media (max-width:760px){.buy{grid-template-columns:1fr}.cover{padding:70px 22px 26px}.cover .brand{left:22px}.spread{padding:22px}.hero{padding-top:60px}}
 </style>
 
@@ -552,10 +588,40 @@ function generate(){
 }
 function renderAI(c){
   if(!c||!Array.isArray(c.units))return '';
+  const units=c.units, n=units.length, unitWord=n>20?'Week':n<=12&&cur&&(productKey()==='baby'||productKey()==='garden')?'Month':n<=12?'Stage':'Week';
+  const r=cur.build(ans);
+  // session cards from the computed preview (gym): reuse per week
+  const sessions=productKey()==='gym'?(r.spreads[1].body.match(/<div class="day">[\s\S]*?<\/div><\/div>/g)||[]).join(''):'';
+  const LS='bdm-'+(plannerId||'x'); let state={}; try{state=JSON.parse(localStorage.getItem(LS)||'{}')}catch(e){}
+  window.__save=()=>{try{localStorage.setItem(LS,JSON.stringify(state))}catch(e){}};
   const label=k=>k.replace(/_/g,' ');
-  const val=v=>Array.isArray(v)?'<ul>'+v.map(x=>'<li>'+x+'</li>').join('')+'</ul>':'<p>'+v+'</p>';
-  return '<div class="spread"><p class="eyebrow">Your full edition · written for you</p><h3>Every '+(c.units.length>20?'week':'stage')+', in order</h3>'+
-    c.units.map(u=>'<div class="day"><div class="dh"><span>'+(u.title||('#'+u.index))+'</span><span>'+(u.focus||'')+'</span></div><div style="padding:14px 18px;font-size:.93rem">'+Object.entries(u).filter(([k])=>!['index','title','focus'].includes(k)).map(([k,v])=>'<h4 style="font-size:.7rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin:10px 0 4px">'+label(k)+'</h4>'+val(v)).join('')+'</div></div>').join('')+'</div>';
+  const order=['focus','summary','title','training_focus','todos','tasks','daily','ask_doctor','check_ups','health','sow','plant_out','harvest','jobs','coaching_note','nutrition_tip','tip','budget_note','country_note','note','journal_prompt'];
+  const keysOf=u=>Object.keys(u).filter(k=>!['index','title'].includes(k)).sort((a,b)=>(order.indexOf(a)+1||99)-(order.indexOf(b)+1||99));
+  const field=(u,k,i)=>{const v=u[k];
+    if(Array.isArray(v))return `<div class="fe"><h4>${label(k)}</h4><ul class="todo">${v.map((x,j)=>{const id=i+':'+k+':'+j;return `<li><label><input type="checkbox" data-id="${id}" ${state[id]?'checked':''}><span>${x}</span></label></li>`}).join('')}</ul></div>`;
+    if(k==='journal_prompt')return `<div class="fe"><h4>Journal</h4><p class="jp">${v}</p><textarea class="jt" data-id="${i}:journal" placeholder="Write here…">${state[i+':journal']||''}</textarea></div>`;
+    if(/note|tip/.test(k))return `<div class="fe"><div class="fn"><b>${label(k)}</b>${v}</div></div>`;
+    if(k==='focus'||k==='summary'||k==='training_focus')return `<p class="lead" style="font-size:1.25rem">${v}</p>`;
+    return `<div class="fe"><h4>${label(k)}</h4><p>${v}</p></div>`;};
+  const done=i=>!!state['done:'+i];
+  const strip=`<div class="ustrip" id="ustrip">${units.map((u,i)=>`<button class="ub ${done(i)?'ok':''}" data-i="${i}" aria-pressed="${i===0}">${u.index||i+1}</button>`).join('')}</div>`;
+  const unitHTML=(u,i)=>`<article class="unit" id="unit-${i}" ${i?'hidden':''}><div class="uh"><div><p class="eyebrow">${unitWord} ${u.index||i+1} of ${n}</p><h3>${u.title||(unitWord+' '+(u.index||i+1))}</h3></div><label class="donebox"><input type="checkbox" data-done="${i}" ${done(i)?'checked':''}><span>Done</span></label></div>${keysOf(u).map(k=>field(u,k,i)).join('')}${sessions?`<div class="fe"><h4>Sessions this week</h4>${sessions}</div>`:''}<div class="unav"><button class="btn ghost" data-nav="-1">← Previous</button><button class="btn" data-nav="1">Next ${unitWord.toLowerCase()} →</button></div></article>`;
+  const pct=Math.round(units.filter((u,i)=>done(i)).length/n*100);
+  return `<div class="spread full" id="full"><div class="fhead"><div><p class="eyebrow">Your full edition · written for you</p><h3>${n} ${unitWord.toLowerCase()}s, in order</h3></div><div class="fact"><button class="btn ghost sm" id="printbtn">Save as PDF</button></div></div>
+    <div class="prog"><div class="pbar2"><i id="pbar2" style="width:${pct}%"></i></div><span id="ptext">${pct}% done</span></div>${strip}${units.map(unitHTML).join('')}</div>`;
+}
+function wireFull(){
+  const full=$('full'); if(!full)return; let cur_i=0;
+  const units=[...full.querySelectorAll('.unit')], btns=[...full.querySelectorAll('.ub')];
+  const go=i=>{cur_i=Math.max(0,Math.min(units.length-1,i));units.forEach((u,j)=>u.hidden=j!==cur_i);btns.forEach((b,j)=>b.setAttribute('aria-pressed',j===cur_i));btns[cur_i].scrollIntoView({inline:'center',block:'nearest',behavior:'smooth'});};
+  full.addEventListener('click',e=>{const b=e.target.closest('.ub');if(b)return go(+b.dataset.i);const nv=e.target.closest('[data-nav]');if(nv){go(cur_i+(+nv.dataset.nav));full.scrollIntoView({behavior:'smooth'});}});
+  full.addEventListener('change',e=>{const t=e.target;const LS='bdm-'+(plannerId||'x');let st={};try{st=JSON.parse(localStorage.getItem(LS)||'{}')}catch(x){}
+    if(t.dataset.id)st[t.dataset.id]=t.checked;if(t.dataset.done!==undefined){st['done:'+t.dataset.done]=t.checked;btns[+t.dataset.done].classList.toggle('ok',t.checked);const d=units.filter((u,i)=>st['done:'+i]).length;$('pbar2').style.width=Math.round(d/units.length*100)+'%';$('ptext').textContent=Math.round(d/units.length*100)+'% done';}
+    try{localStorage.setItem(LS,JSON.stringify(st))}catch(x){}});
+  full.addEventListener('input',e=>{const t=e.target;if(t.classList.contains('jt')){const LS='bdm-'+(plannerId||'x');let st={};try{st=JSON.parse(localStorage.getItem(LS)||'{}')}catch(x){}st[t.dataset.id]=t.value;try{localStorage.setItem(LS,JSON.stringify(st))}catch(x){}}});
+  $('printbtn').addEventListener('click',()=>{document.body.classList.add('printing');units.forEach(u=>u.hidden=false);setTimeout(()=>{window.print();setTimeout(()=>{document.body.classList.remove('printing');units.forEach((u,j)=>u.hidden=j!==cur_i);},500);},50);});
+  // open at the first unit not done
+  const first=units.findIndex((u,i)=>!btns[i].classList.contains('ok'));if(first>0)go(first);
 }
 function show(){
   const r=cur.build(ans);
@@ -564,6 +630,7 @@ function show(){
   if(unlocked&&aiContent){$('buy-h').innerHTML='Your full edition is ready.<span class="unlocked">unlocked</span>';$('buy-p').textContent='Bookmark this page: your planner link is '+location.origin+'/?p='+plannerId+'. The code is now used.';$('buybtn').textContent='Copy my link';$('price').textContent='✓';$('buybtn').onclick=()=>{navigator.clipboard.writeText(location.origin+'/?p='+plannerId).then(()=>$('buybtn').textContent='Copied ✓').catch(()=>{});};}
   else{$('buy-h').textContent='This is a free preview.';$('buy-p').textContent="The full edition runs to every week and every page. Buy on Etsy, enter your order number here, and it's yours within a minute: interactive online plus a printable PDF.";$('buybtn').textContent='Get it on Etsy';$('price').textContent=cur.price;$('buybtn').onclick=()=>window.open('https://www.etsy.com/shop/byDigiMotto','_blank');}
   $('spreads').innerHTML=r.spreads.map(s=>`<div class="spread"><p class="eyebrow">${s.eb}</p><h3>${s.h}</h3>${s.body}</div>`).join('')+(unlocked&&aiContent?renderAI(aiContent):'');
+  wireFull();
   window.scrollTo({top:0});
 }
 $('havecode').addEventListener('click',()=>{$('home').hidden=true;$('code').hidden=false;$('codein').focus();window.scrollTo({top:0});});

@@ -186,7 +186,7 @@ input::placeholder{color:var(--line2)}
 </style>
 
 <div class="wrap">
-<nav><span class="logo"><i></i>byDigiMotto</span><div class="links"><a href="#moments">Planners</a><a href="#how">How it works</a><a href="#" id="navcode">Etsy code</a></div><button class="btn sm" id="navstart">Start</button></nav>
+<nav><span class="logo"><i></i>byDigiMotto</span><div class="links"><a href="#moments">Planners</a><a href="#how">How it works</a><a href="#" id="navcode">Etsy buyers</a></div><button class="btn sm" id="navstart">Start</button></nav>
 
 <!-- HOME -->
 <section id="home">
@@ -194,7 +194,7 @@ input::placeholder{color:var(--line2)}
     <p class="eyebrow rv">Planners &amp; programs built from your answers</p>
     <h1 class="rv d1" style="margin-top:18px">Not a template.<br>Written <em>for you.</em></h1>
     <p class="rv d2">Seven questions. Your dates, your body, your goals and your situation run through every page. Nobody else gets the same file.</p>
-    <div class="cta rv d3"><button class="btn" id="start">Choose a planner</button><button class="btn ghost" id="havecode">I have an Etsy code</button></div>
+    <div class="cta rv d3"><button class="btn" id="start">Choose a planner</button><button class="btn ghost" id="havecode">I bought on Etsy</button></div>
   </div>
 
   <div class="show rv d4">
@@ -216,7 +216,7 @@ input::placeholder{color:var(--line2)}
   </div>
 
   <div class="moments" id="moments">
-    <div class="sec-h rv"><p class="eyebrow">Choose a planner</p><h2>Pick your <em>chapter.</em></h2><p class="sub">Every planner starts with a free preview built from your answers. The full edition unlocks with the code from your Etsy order.</p></div>
+    <div class="sec-h rv"><p class="eyebrow">Choose a planner</p><h2>Pick your <em>chapter.</em></h2><p class="sub">Every planner starts with a free preview built from your answers. The full edition unlocks with your Etsy order number.</p></div>
     <div class="cards" id="cards"></div>
   </div>
 
@@ -225,7 +225,7 @@ input::placeholder{color:var(--line2)}
     <div class="bgrid">
       <div class="tile t1 rv"><h3>Your dates, computed.</h3><p>Due day, frost date, race day, wedding day: every page counts from the day you give us. Weeks, deadlines and check-ups land on real calendar dates.</p><div class="flow"><span>Due 14 Mar</span><i>→</i><span>Week 23 today</span><i>→</i><span>EI claim 20 Dec</span><i>→</i><span>Bag by wk 34</span></div></div>
       <div class="tile t2 orange rv d1"><h3>Ready in</h3><div class="big">60s</div><p>From last answer to finished planner.</p><div class="tick"><i></i></div></div>
-      <div class="tile t3 rv"><h3>One code, one edition.</h3><p>Your Etsy download holds a single-use code. It unlocks one planner, then it's spent.</p><div class="codebox">DM-7K2P-Q9XA <em>used ✓</em></div></div>
+      <div class="tile t3 rv"><h3>One order, one edition.</h3><p>Your Etsy order number unlocks one planner, then it's spent. No codes to lose.</p><div class="codebox">Order 3412345678 <em>unlocked ✓</em></div></div>
       <div class="tile t4 dark rv d1"><h3>Country-aware.</h3><p>Leave rules, vaccine schedules, registration deadlines: written for where you live, not a generic version.</p><div class="chips" style="margin-top:auto"><span style="background:rgba(255,255,255,.1);border-color:transparent;color:#fff">🇨🇦 EI claim</span><span style="background:rgba(255,255,255,.1);border-color:transparent;color:#fff">🇬🇧 MATB1</span><span style="background:rgba(255,255,255,.1);border-color:transparent;color:#fff">🇩🇪 Mutterpass</span></div></div>
       <div class="tile t5 rv d2"><h3>Online and on paper.</h3><p>An interactive planner you can tick through, plus a printable PDF of the same edition.</p><div class="big" style="font-size:2.6rem">PDF + web</div></div>
     </div>
@@ -241,11 +241,11 @@ input::placeholder{color:var(--line2)}
 <!-- CODE -->
 <section id="code" class="stage" hidden>
   <p class="qnum">Unlock</p>
-  <h2 class="q">Enter your Etsy code</h2>
-  <p class="hint">It's inside the PDF you downloaded from Etsy. One code, one planner. Entering it twice won't work.</p>
-  <div class="answer"><input type="text" id="codein" placeholder="DM-XXXX-XXXX" autocomplete="off"></div>
+  <h2 class="q">Enter your Etsy order number</h2>
+  <p class="hint">Find it on your Etsy Purchases page, or in the PDF you downloaded. One order unlocks one planner.</p>
+  <div class="answer"><input type="text" id="codein" placeholder="e.g. 3412345678" autocomplete="off" inputmode="numeric"></div>
   <p class="hint" id="codemsg" style="color:var(--accent);font-weight:600"></p>
-  <div class="nav"><button class="btn ghost" id="codeback">Back</button><button class="btn" id="codego">Unlock</button><span class="hint" style="margin:0;font-size:.8rem">demo: try DM-2026-TEST</span></div>
+  <div class="nav"><button class="btn ghost" id="codeback">Back</button><button class="btn" id="codego">Unlock</button></div>
 </section>
 
 <!-- QUESTIONS -->
@@ -271,7 +271,7 @@ input::placeholder{color:var(--line2)}
   <div class="cover" id="cover"><span class="brand">byDigiMotto</span><p class="eyebrow" id="r-eyebrow"></p><h2 id="r-title"></h2><p id="r-sub"></p></div>
   <div id="spreads"></div>
   <div class="buy">
-    <div><h3 id="buy-h">This is a free preview.</h3><p id="buy-p">The full edition runs to every week and every page. Buy on Etsy, enter the code here, and it's yours within a minute: interactive online plus a printable PDF.</p></div>
+    <div><h3 id="buy-h">This is a free preview.</h3><p id="buy-p">The full edition runs to every week and every page. Buy on Etsy, enter your order number here, and it's yours within a minute: interactive online plus a printable PDF.</p></div>
     <div style="text-align:center"><div class="price" id="price">$24</div><button class="btn" id="buybtn">Get it on Etsy</button></div>
   </div>
   <p class="restart"><button class="btn ghost" id="restart">Try another planner</button></p>
@@ -562,11 +562,12 @@ function show(){
   $('gen').hidden=true;$('result').hidden=false;
   $('cover').style.setProperty('--cv',cur.color);$('r-eyebrow').textContent=r.eyebrow;$('r-title').innerHTML=r.title;$('r-sub').textContent=r.sub;$('price').textContent=cur.price;
   if(unlocked&&aiContent){$('buy-h').innerHTML='Your full edition is ready.<span class="unlocked">unlocked</span>';$('buy-p').textContent='Bookmark this page: your planner link is '+location.origin+'/?p='+plannerId+'. The code is now used.';$('buybtn').textContent='Copy my link';$('price').textContent='✓';$('buybtn').onclick=()=>{navigator.clipboard.writeText(location.origin+'/?p='+plannerId).then(()=>$('buybtn').textContent='Copied ✓').catch(()=>{});};}
-  else{$('buy-h').textContent='This is a free preview.';$('buy-p').textContent="The full edition runs to every week and every page. Buy on Etsy, enter the code here, and it's yours within a minute: interactive online plus a printable PDF.";$('buybtn').textContent='Get it on Etsy';$('price').textContent=cur.price;$('buybtn').onclick=()=>window.open('https://www.etsy.com/shop/byDigiMotto','_blank');}
+  else{$('buy-h').textContent='This is a free preview.';$('buy-p').textContent="The full edition runs to every week and every page. Buy on Etsy, enter your order number here, and it's yours within a minute: interactive online plus a printable PDF.";$('buybtn').textContent='Get it on Etsy';$('price').textContent=cur.price;$('buybtn').onclick=()=>window.open('https://www.etsy.com/shop/byDigiMotto','_blank');}
   $('spreads').innerHTML=r.spreads.map(s=>`<div class="spread"><p class="eyebrow">${s.eb}</p><h3>${s.h}</h3>${s.body}</div>`).join('')+(unlocked&&aiContent?renderAI(aiContent):'');
   window.scrollTo({top:0});
 }
 $('havecode').addEventListener('click',()=>{$('home').hidden=true;$('code').hidden=false;$('codein').focus();window.scrollTo({top:0});});
+(function(){const o=new URLSearchParams(location.search).get('order');if(o){$('codein').value=o;$('havecode').click();}})();
 $('codeback').addEventListener('click',()=>{$('code').hidden=true;$('home').hidden=false;});
 $('codego').addEventListener('click',()=>{
   const v=$('codein').value.trim().toUpperCase();$('codemsg').textContent='Checking…';$('codego').disabled=true;
@@ -574,8 +575,10 @@ $('codego').addEventListener('click',()=>{
     $('codego').disabled=false;
     if(d.ok){unlocked=true;unlockCode=v;$('codemsg').textContent='Code accepted. Pick your planner; this code unlocks one edition.';setTimeout(()=>{$('code').hidden=true;$('home').hidden=false;$('moments').scrollIntoView();},900);}
     else if(d.reason==='used'){$('codemsg').innerHTML='This code was already used on '+new Date(d.used_at).toLocaleDateString('en-GB',{day:'numeric',month:'short'})+'. '+(d.planner_id?'<a href="/?p='+d.planner_id+'" style="color:inherit">Open that planner</a>.':'Need a change? Reply to your Etsy order.');}
-    else if(d.reason==='format'){$('codemsg').textContent='Codes look like DM-XXXX-XXXX.';}
-    else{$('codemsg').textContent='Code not found. Check the PDF from your Etsy download.';}
+    else if(d.reason==='format'){$('codemsg').textContent='Enter your Etsy order number (digits only, from your Purchases page).';}
+    else if(d.reason==='no_planner'){$('codemsg').textContent='That order does not include a planner. Check the order number on your Etsy Purchases page.';}
+    else if(d.reason==='etsy_unavailable'){$('codemsg').textContent='Etsy is not responding right now. Try again in a minute.';}
+    else{$('codemsg').textContent='Order not found. Use the order number from your Etsy Purchases page (numbers only).';}
   }).catch(()=>{$('codego').disabled=false;$('codemsg').textContent='Could not reach the server. Try again in a moment.';});
 });
 // Open a saved planner from ?p=<id>

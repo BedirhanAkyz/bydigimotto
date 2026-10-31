@@ -532,23 +532,55 @@ $('back').addEventListener('click',()=>{if(qi>0){qi--;render();}});
 document.addEventListener('keydown',e=>{if(e.key==='Enter'&&!$('ask').hidden&&e.target.tagName!=='BUTTON'){e.preventDefault();next();}});
 
 /* ---------- GENERATE ---------- */
+let unlocked=false, unlockCode='', aiContent=null, plannerId=null;
+const productKey=()=>Object.keys(M).find(k=>M[k]===cur);
+function computedFacts(r){ // dates/numbers shown in the preview, passed to the writer so it never invents them
+  const out={};(r.spreads[0].body.match(/<div class="kv"><span>(.*?)<\/span><span>(.*?)<\/span><\/div>/g)||[]).forEach(m=>{const mm=m.match(/<span>(.*?)<\/span><span>(.*?)<\/span>/);if(mm)out[mm[1].replace(/<[^>]+>/g,'')]=mm[2].replace(/<[^>]+>/g,'');});return out;}
 function generate(){
   $('ask').hidden=true;$('gen').hidden=false;window.scrollTo({top:0});
-  const lines=['Counting the dates from your answers…','Sending your answers to the writer…','Writing pages for '+(ans.name||ans.names||ans.baby||ans.dog||'you')+'…','Setting the cover…'];
-  let i=0;const t=()=>{$('gen-p').textContent=lines[i];i++;if(i<lines.length)setTimeout(t,900);else setTimeout(show,900);};t();
+  const who=(ans.name||ans.names||ans.baby||ans.dog||'you');
+  const lines=unlocked?['Counting the dates from your answers…','Locking your code to this edition…','Writing every page for '+who+' (about a minute)…','Saving your planner…']:['Counting the dates from your answers…','Building your preview pages…','Setting the cover…'];
+  let i=0;const t=()=>{$('gen-p').textContent=lines[Math.min(i,lines.length-1)];i++;if(i<lines.length)setTimeout(t,900);else if(!unlocked)setTimeout(show,700);};t();
+  if(unlocked){
+    const r=cur.build(ans);
+    fetch('/api/generate',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({code:unlockCode,product:productKey(),answers:ans,computed:computedFacts(r)})})
+      .then(x=>x.json()).then(d=>{
+        if(d.ok){aiContent=d.content;plannerId=d.id;show();}
+        else{unlocked=false;$('gen-p').textContent=d.reason==='wrong_product'?'This code is for a different planner ('+d.product+'). Showing the free preview instead.':'That code could not be used. Showing the free preview instead.';setTimeout(show,2200);}
+      }).catch(()=>{unlocked=false;$('gen-p').textContent='The writer is busy right now. Showing the free preview; your code is still valid.';setTimeout(show,2200);});
+  }
+}
+function renderAI(c){
+  if(!c||!Array.isArray(c.units))return '';
+  const label=k=>k.replace(/_/g,' ');
+  const val=v=>Array.isArray(v)?'<ul>'+v.map(x=>'<li>'+x+'</li>').join('')+'</ul>':'<p>'+v+'</p>';
+  return '<div class="spread"><p class="eyebrow">Your full edition · written for you</p><h3>Every '+(c.units.length>20?'week':'stage')+', in order</h3>'+
+    c.units.map(u=>'<div class="day"><div class="dh"><span>'+(u.title||('#'+u.index))+'</span><span>'+(u.focus||'')+'</span></div><div style="padding:14px 18px;font-size:.93rem">'+Object.entries(u).filter(([k])=>!['index','title','focus'].includes(k)).map(([k,v])=>'<h4 style="font-size:.7rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin:10px 0 4px">'+label(k)+'</h4>'+val(v)).join('')+'</div></div>').join('')+'</div>';
 }
 function show(){
   const r=cur.build(ans);
   $('gen').hidden=true;$('result').hidden=false;
   $('cover').style.setProperty('--cv',cur.color);$('r-eyebrow').textContent=r.eyebrow;$('r-title').innerHTML=r.title;$('r-sub').textContent=r.sub;$('price').textContent=cur.price;
-  if(unlocked){$('buy-h').innerHTML='Unlocked with your Etsy code.<span class="unlocked">full edition</span>';$('buy-p').textContent='Your full planner is being written now. The link also goes to your Etsy email. This code is now used.';$('buybtn').textContent='Open my planner';$('price').textContent='✓';}else{$('buy-h').textContent='This is a free preview.';$('buy-p').textContent="The full edition runs to every week and every page. Buy on Etsy, enter the code here, and it's yours within a minute: interactive online plus a printable PDF.";$('buybtn').textContent='Get it on Etsy';$('price').textContent=cur.price;}
-  $('spreads').innerHTML=r.spreads.map(s=>`<div class="spread"><p class="eyebrow">${s.eb}</p><h3>${s.h}</h3>${s.body}</div>`).join('');
+  if(unlocked&&aiContent){$('buy-h').innerHTML='Your full edition is ready.<span class="unlocked">unlocked</span>';$('buy-p').textContent='Bookmark this page: your planner link is '+location.origin+'/?p='+plannerId+'. The code is now used.';$('buybtn').textContent='Copy my link';$('price').textContent='✓';$('buybtn').onclick=()=>{navigator.clipboard.writeText(location.origin+'/?p='+plannerId).then(()=>$('buybtn').textContent='Copied ✓').catch(()=>{});};}
+  else{$('buy-h').textContent='This is a free preview.';$('buy-p').textContent="The full edition runs to every week and every page. Buy on Etsy, enter the code here, and it's yours within a minute: interactive online plus a printable PDF.";$('buybtn').textContent='Get it on Etsy';$('price').textContent=cur.price;$('buybtn').onclick=()=>window.open('https://www.etsy.com/shop/byDigiMotto','_blank');}
+  $('spreads').innerHTML=r.spreads.map(s=>`<div class="spread"><p class="eyebrow">${s.eb}</p><h3>${s.h}</h3>${s.body}</div>`).join('')+(unlocked&&aiContent?renderAI(aiContent):'');
   window.scrollTo({top:0});
 }
-let unlocked=false;
 $('havecode').addEventListener('click',()=>{$('home').hidden=true;$('code').hidden=false;$('codein').focus();window.scrollTo({top:0});});
 $('codeback').addEventListener('click',()=>{$('code').hidden=true;$('home').hidden=false;});
-$('codego').addEventListener('click',()=>{const v=$('codein').value.trim().toUpperCase();if(v==='DM-2026-TEST'){unlocked=true;$('codemsg').textContent='Code accepted. Pick your planner; this code unlocks one edition.';setTimeout(()=>{$('code').hidden=true;$('home').hidden=false;$('moments').scrollIntoView();},900);}else if(v==='DM-2026-USED'){$('codemsg').textContent='This code was already used on 28 Oct. Need a change to that planner? Reply to your Etsy order.';}else{$('codemsg').textContent='Code not found. Check the PDF from your Etsy download.';}});
+$('codego').addEventListener('click',()=>{
+  const v=$('codein').value.trim().toUpperCase();$('codemsg').textContent='Checking…';$('codego').disabled=true;
+  fetch('/api/verify',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({code:v})}).then(x=>x.json()).then(d=>{
+    $('codego').disabled=false;
+    if(d.ok){unlocked=true;unlockCode=v;$('codemsg').textContent='Code accepted. Pick your planner; this code unlocks one edition.';setTimeout(()=>{$('code').hidden=true;$('home').hidden=false;$('moments').scrollIntoView();},900);}
+    else if(d.reason==='used'){$('codemsg').innerHTML='This code was already used on '+new Date(d.used_at).toLocaleDateString('en-GB',{day:'numeric',month:'short'})+'. '+(d.planner_id?'<a href="/?p='+d.planner_id+'" style="color:inherit">Open that planner</a>.':'Need a change? Reply to your Etsy order.');}
+    else if(d.reason==='format'){$('codemsg').textContent='Codes look like DM-XXXX-XXXX.';}
+    else{$('codemsg').textContent='Code not found. Check the PDF from your Etsy download.';}
+  }).catch(()=>{$('codego').disabled=false;$('codemsg').textContent='Could not reach the server. Try again in a moment.';});
+});
+// Open a saved planner from ?p=<id>
+(function(){const id=new URLSearchParams(location.search).get('p');if(!id)return;
+  fetch('/api/planner?id='+encodeURIComponent(id)).then(x=>x.json()).then(d=>{if(!d.ok)return;const pl=d.planner;cur=M[pl.product];if(!cur)return;ans=pl.answers;delete ans.computed;unlocked=true;aiContent=pl.content;plannerId=pl.id;$('home').hidden=true;show();}).catch(()=>{});})();
 $('codein').addEventListener('keydown',e=>{if(e.key==='Enter')$('codego').click();});
 $('restart').addEventListener('click',()=>{$('result').hidden=true;$('home').hidden=false;window.scrollTo({top:0});});
 })();

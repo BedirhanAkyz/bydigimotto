@@ -7,7 +7,7 @@ async function sb(path, opts = {}) {
     ...opts,
     headers: {
       apikey: KEY,
-      Authorization: `Bearer ${KEY}`,
+      ...(KEY && KEY.startsWith("eyJ") ? { Authorization: `Bearer ${KEY}` } : {}),
       "Content-Type": "application/json",
       Prefer: opts.prefer || "return=representation",
       ...(opts.headers || {}),

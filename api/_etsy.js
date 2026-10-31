@@ -1,5 +1,6 @@
 // Etsy helper: valid access token (auto-refresh) + receipt lookup
 const { sb } = require("./_lib");
+const apiKey = () => process.env.ETSY_SECRET ? `${process.env.ETSY_KEYSTRING}:${process.env.ETSY_SECRET}` : process.env.ETSY_KEYSTRING;
 async function accessToken() {
   const [row] = await sb("settings?key=eq.etsy_auth&select=value");
   if (!row) throw new Error("etsy_not_connected");
@@ -15,7 +16,7 @@ async function accessToken() {
 }
 async function getReceipt(receiptId) {
   const a = await accessToken();
-  const r = await fetch(`https://openapi.etsy.com/v3/application/shops/${a.shop_id}/receipts/${receiptId}`, { headers: { "x-api-key": process.env.ETSY_KEYSTRING, Authorization: `Bearer ${a.access_token}` } });
+  const r = await fetch(`https://openapi.etsy.com/v3/application/shops/${a.shop_id}/receipts/${receiptId}`, { headers: { "x-api-key": apiKey(), Authorization: `Bearer ${a.access_token}` } });
   if (r.status === 404) return null;
   const j = await r.json(); if (!r.ok) throw new Error("etsy_receipt: " + JSON.stringify(j).slice(0, 200));
   return j;
@@ -26,4 +27,4 @@ async function productFor(titles) {
   const p = products.find(x => t.includes(x.match));
   return p ? p.key : "other";
 }
-module.exports = { accessToken, getReceipt, productFor };
+module.exports = { accessToken, getReceipt, productFor, apiKey };

@@ -1,12 +1,12 @@
 // GET /api/etsy-status?token=ADMIN_TOKEN -> checks the Etsy connection, fills shop_id if missing
 const { sb, json } = require("./_lib");
-const { accessToken } = require("./_etsy");
+const { accessToken, apiKey } = require("./_etsy");
 module.exports = async (req, res) => {
   const u = new URL(req.url, "http://x");
   if (u.searchParams.get("token") !== process.env.ADMIN_TOKEN) return json(res, 401, { ok: false });
   try {
     const a = await accessToken();
-    const H = { "x-api-key": process.env.ETSY_KEYSTRING, Authorization: `Bearer ${a.access_token}` };
+    const H = { "x-api-key": apiKey(), Authorization: `Bearer ${a.access_token}` };
     const me = await fetch("https://openapi.etsy.com/v3/application/users/me", { headers: H }).then(x => x.json());
     let shop_id = me.shop_id || a.shop_id, shop_name = a.shop_name;
     if (!shop_id && me.user_id) {

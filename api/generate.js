@@ -15,18 +15,19 @@ module.exports = async (req, res) => {
   if (req.method !== "POST") return json(res, 405, { ok: false, reason: "method" });
   try {
     const { code, product, answers, computed } = await readBody(req);
-    const c = normCode(code);
+    const c = normCode(code).replace(/^#/, "");
     if (!PRODUCT_BRIEF[product]) return json(res, 400, { ok: false, reason: "product" });
 
-    // 1) Atomically claim the code: only succeeds if used_at is still null.
+    // 1) Atomically claim the code or order: only succeeds if used_at is still null.
+    const isOrder = /^\d{8,12}$/.test(c);
+    const table = isOrder ? "orders" : "codes", col = isOrder ? "order_id" : "code";
     const claimed = await sb(
-      `codes?code=eq.${encodeURIComponent(c)}&used_at=is.null`,
+      `${table}?${col}=eq.${encodeURIComponent(c)}&used_at=is.null`,
       { method: "PATCH", body: JSON.stringify({ used_at: new Date().toISOString() }) }
     );
     if (!claimed.length) return json(res, 200, { ok: false, reason: "used_or_notfound" });
     if (claimed[0].product !== "any" && claimed[0].product !== product) {
-      // wrong product for this code: release it
-      await sb(`codes?code=eq.${encodeURIComponent(c)}`, { method: "PATCH", body: JSON.stringify({ used_at: null }) });
+      await sb(`${table}?${col}=eq.${encodeURIComponent(c)}`, { method: "PATCH", body: JSON.stringify({ used_at: null }) });
       return json(res, 200, { ok: false, reason: "wrong_product", product: claimed[0].product });
     }
 
@@ -59,9 +60,9 @@ Rules: warm, specific, second person, use the buyer's names. No medical or legal
     // 3) Store planner, link code.
     const [planner] = await sb("planners", {
       method: "POST",
-      body: JSON.stringify({ code: c, product, answers: { ...answers, computed }, content }),
+      body: JSON.stringify({ code: isOrder ? null : c, order_id: isOrder ? c : null, product, answers: { ...answers, computed }, content }),
     });
-    await sb(`codes?code=eq.${encodeURIComponent(c)}`, { method: "PATCH", body: JSON.stringify({ planner_id: planner.id }) });
+    await sb(`${table}?${col}=eq.${encodeURIComponent(c)}`, { method: "PATCH", body: JSON.stringify({ planner_id: planner.id }) });
 
     return json(res, 200, { ok: true, id: planner.id, content });
   } catch (e) {

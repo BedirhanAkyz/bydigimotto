@@ -1,0 +1,555 @@
+<title>byDigiMotto</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Instrument+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap">
+<style>
+/* Layout: Apple-style light canvas; centered oversized headline; a tabbed product showcase; a bento grid of features; scroll-reveal; questions one per screen; result as stacked sheets */
+:root{
+  --bg:#fbfbf9; --paper:#ffffff; --tile:#f3f2ee; --ink:#0e0e14; --fg:#2b2b36; --muted:#74747f; --line:#e7e6e0; --line2:#d2d1ca;
+  --accent:#ff6a1f; --navy:#23205c; --soft:#fff1e8;
+  --serif:"Instrument Serif",Georgia,serif; --body:"Instrument Sans",system-ui,sans-serif;
+  --r:20px; --sh:0 1px 2px rgba(0,0,0,.04),0 30px 70px -30px rgba(14,14,20,.25);
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0f0f12; --paper:#17171b; --tile:#1c1c21; --ink:#f5f4f0; --fg:#dcdbd5; --muted:#8f8f99; --line:#26262c; --line2:#35353c;
+  --accent:#ff7a33; --navy:#8d86e8; --soft:#2a1d14; --sh:0 1px 2px rgba(0,0,0,.4),0 30px 70px -30px rgba(0,0,0,.8); color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0f0f12; --paper:#17171b; --tile:#1c1c21; --ink:#f5f4f0; --fg:#dcdbd5; --muted:#8f8f99; --line:#26262c; --line2:#35353c;
+  --accent:#ff7a33; --navy:#8d86e8; --soft:#2a1d14; --sh:0 1px 2px rgba(0,0,0,.4),0 30px 70px -30px rgba(0,0,0,.8); color-scheme:dark}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--fg);font-family:var(--body);line-height:1.6;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:0 90px;-webkit-font-smoothing:antialiased}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);background:var(--bg);z-index:10}
+.wrap{max-width:1080px;margin:0 auto}
+h1,h2,h3{font-family:var(--body);font-weight:600;text-wrap:balance;margin:0;color:var(--ink);letter-spacing:-.04em}
+h1 em,h2 em,h3 em{font-family:var(--serif);font-style:italic;font-weight:400;letter-spacing:0;color:var(--accent)}
+p{margin:0}
+.eyebrow{font-size:.74rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);font-weight:600}
+nav{position:sticky;top:env(safe-area-inset-top,0px);z-index:9;display:flex;justify-content:space-between;align-items:center;padding:16px 0;backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);background:color-mix(in srgb,var(--bg) 78%,transparent);border-bottom:1px solid var(--line);margin-bottom:0}
+.logo{font-size:1.15rem;font-weight:700;color:var(--ink);letter-spacing:-.02em;display:flex;align-items:center;gap:9px}
+.logo i{width:10px;height:10px;border-radius:50%;background:var(--accent)}
+nav .links{display:flex;gap:22px;font-size:.88rem;color:var(--muted)}
+nav .links a{color:inherit;text-decoration:none}
+nav .links a:hover{color:var(--ink)}
+@media (max-width:600px){nav .links{display:none}}
+button{font:inherit;cursor:pointer}
+.btn{background:var(--ink);color:var(--bg);border:1px solid var(--ink);border-radius:999px;padding:13px 24px;font-weight:600;font-size:.93rem;transition:transform .15s,background .15s,color .15s,border-color .15s}
+.btn:hover{background:var(--accent);border-color:var(--accent);color:#fff;transform:translateY(-1px)}
+.btn.ghost{background:none;color:var(--ink);border-color:var(--line2)}
+.btn.ghost:hover{background:var(--paper);border-color:var(--ink);color:var(--ink)}
+.btn.sm{padding:9px 16px;font-size:.84rem}
+.btn:focus-visible,input:focus-visible,select:focus-visible,.opt:focus-visible,.tab:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+/* reveal */
+.rv{opacity:1;transform:none}
+.js .rv{opacity:0;transform:translateY(22px);transition:opacity .7s cubic-bezier(.2,.7,.2,1),transform .7s cubic-bezier(.2,.7,.2,1)}
+.js .rv.in{opacity:1;transform:none}
+.js .rv.d1{transition-delay:.1s}.js .rv.d2{transition-delay:.2s}.js .rv.d3{transition-delay:.3s}.js .rv.d4{transition-delay:.4s}
+@media (prefers-reduced-motion:reduce){.js .rv{opacity:1;transform:none;transition:none}}
+/* hero */
+.hero{text-align:center;padding:96px 0 40px;max-width:860px;margin:0 auto}
+.hero h1{font-size:clamp(3rem,8vw,6.4rem);line-height:.96}
+.hero p{font-size:1.2rem;margin:26px auto 0;max-width:30em;color:var(--muted);line-height:1.5}
+.cta{display:flex;gap:10px;flex-wrap:wrap;margin-top:34px;justify-content:center}
+/* showcase */
+.show{margin-top:60px}
+.tabs{display:flex;gap:6px;justify-content:center;flex-wrap:wrap;padding:6px;border:1px solid var(--line);border-radius:999px;width:max-content;max-width:100%;margin:0 auto;background:var(--paper)}
+.tab{border:0;background:none;border-radius:999px;padding:9px 16px;font-size:.88rem;font-weight:500;color:var(--muted);transition:background .2s,color .2s}
+.tab[aria-selected="true"]{background:var(--ink);color:var(--bg)}
+.stagebox{position:relative;margin:28px auto 0;max-width:960px;border-radius:28px;background:var(--tile);padding:clamp(18px,4vw,48px);overflow:hidden;min-height:420px}
+.stagebox::before{content:"";position:absolute;inset:auto -20% -60% auto;width:70%;aspect-ratio:1;max-width:100%;border-radius:50%;background:radial-gradient(circle,var(--soft),transparent 65%);pointer-events:none}
+.sheet{position:relative;background:var(--paper);border:1px solid var(--line);border-radius:18px;padding:26px 26px 22px;box-shadow:var(--sh);max-width:520px;margin:0 auto;transition:opacity .35s,transform .35s}
+.sheet.swap{opacity:0;transform:translateY(10px) scale(.985)}
+.sheet .top{display:flex;justify-content:space-between;align-items:baseline;gap:10px;flex-wrap:wrap}
+.sheet h4{font-family:var(--serif);font-weight:400;font-size:2.1rem;margin:4px 0 0;color:var(--ink);letter-spacing:-.01em;line-height:1}
+.sheet .wk{font-size:.78rem;color:var(--muted);font-variant-numeric:tabular-nums}
+.grid7{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin-top:18px}
+.grid7 span{aspect-ratio:1;max-width:100%;border-radius:7px;background:var(--bg);border:1px solid var(--line);display:grid;place-items:center;font-size:.68rem;color:var(--muted);font-variant-numeric:tabular-nums}
+.grid7 span.on{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.grid7 span.dot{position:relative}.grid7 span.dot::after{content:"";position:absolute;bottom:4px;width:4px;height:4px;border-radius:50%;background:var(--accent)}
+.li{display:flex;justify-content:space-between;gap:12px;padding:10px 0;border-top:1px solid var(--line);font-size:.88rem}
+.li b{font-weight:600;color:var(--ink);font-variant-numeric:tabular-nums;white-space:nowrap}
+.sheet .note{margin-top:14px;padding:11px 14px;border-left:2px solid var(--accent);background:var(--soft);font-size:.84rem;border-radius:0 8px 8px 0;color:var(--fg)}
+.pbar{height:8px;border-radius:4px;background:var(--line);overflow:hidden;margin-top:14px}
+.pbar i{display:block;height:100%;background:var(--ink);border-radius:4px;transition:width 1.2s cubic-bezier(.2,.7,.2,1)}
+.chips{display:flex;gap:6px;flex-wrap:wrap;margin-top:12px}
+.chips span{font-size:.72rem;padding:5px 10px;border-radius:999px;background:var(--tile);color:var(--fg);border:1px solid var(--line)}
+.caption{text-align:center;color:var(--muted);font-size:.9rem;margin-top:18px;font-family:var(--serif);font-style:italic;font-size:1.05rem}
+/* stats */
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:14px;margin:70px 0 0}
+.stat{text-align:center;padding:26px 10px;border-top:1px solid var(--line)}
+.stat b{display:block;font-family:var(--serif);font-weight:400;font-size:3rem;color:var(--ink);line-height:1;font-variant-numeric:tabular-nums}
+.stat span{font-size:.84rem;color:var(--muted);display:block;margin-top:8px}
+/* moments */
+.moments{padding:90px 0 20px}
+.sec-h{text-align:center;max-width:620px;margin:0 auto}
+.sec-h h2{font-size:clamp(2.2rem,5vw,3.6rem);margin-top:10px;line-height:1}
+.sec-h .sub{color:var(--muted);margin-top:14px;font-size:1.02rem}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:14px;margin-top:44px}
+.card{background:var(--paper);border:1px solid var(--line);border-radius:var(--r);padding:26px 22px 20px;text-align:left;color:var(--fg);transition:transform .25s cubic-bezier(.2,.7,.2,1),box-shadow .25s,border-color .25s;display:flex;flex-direction:column;gap:10px;min-height:224px;position:relative;overflow:hidden}
+.card::before{content:"";position:absolute;inset:0 0 auto;height:4px;background:var(--cc,var(--accent));transform:scaleX(0);transform-origin:left;transition:transform .3s}
+.card:hover{transform:translateY(-5px);box-shadow:var(--sh);border-color:transparent}
+.card:hover::before{transform:scaleX(1)}
+.card .glyph{font-family:var(--serif);font-size:1.05rem;color:var(--muted);letter-spacing:.04em}
+.card h3{font-size:1.5rem;line-height:1.05;margin-top:6px}
+.card p{font-size:.9rem;color:var(--muted);line-height:1.45}
+.card .meta{margin-top:auto;display:flex;justify-content:space-between;align-items:center;font-size:.8rem;color:var(--muted);padding-top:14px;border-top:1px solid var(--line)}
+.card .meta b{color:var(--ink);font-weight:600}
+.card .meta i{width:8px;height:8px;border-radius:50%;background:var(--cc,var(--accent));display:inline-block;margin-right:8px;vertical-align:middle}
+/* bento */
+.bento{padding:90px 0 20px}
+.bgrid{display:grid;grid-template-columns:repeat(6,1fr);gap:14px;margin-top:44px}
+.tile{background:var(--tile);border-radius:var(--r);padding:28px;min-width:0;display:flex;flex-direction:column;gap:8px;position:relative;overflow:hidden}
+.tile h3{font-size:1.35rem;letter-spacing:-.03em}
+.tile p{font-size:.92rem;color:var(--muted);line-height:1.5}
+.tile .big{font-family:var(--serif);font-size:clamp(3rem,6vw,5rem);color:var(--ink);line-height:.9;margin-top:auto;letter-spacing:-.02em}
+.t1{grid-column:span 4}.t2{grid-column:span 2}.t3{grid-column:span 2}.t4{grid-column:span 2}.t5{grid-column:span 2}
+.tile.dark{background:var(--ink);color:var(--bg)}.tile.dark h3,.tile.dark .big{color:var(--bg)}.tile.dark p{color:var(--bg);opacity:.7}
+.tile.orange{background:var(--accent);color:#fff}.tile.orange h3,.tile.orange .big,.tile.orange p{color:#fff}.tile.orange p{opacity:.9}
+.flow{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:auto;font-size:.82rem}
+.flow span{padding:8px 12px;border-radius:10px;background:var(--paper);border:1px solid var(--line);color:var(--ink);font-weight:500}
+.flow i{color:var(--muted);font-style:normal}
+.codebox{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:1.1rem;letter-spacing:.08em;background:var(--paper);color:var(--ink);border:1px dashed var(--line2);border-radius:10px;padding:12px 14px;margin-top:auto;display:flex;justify-content:space-between;align-items:center;gap:10px}
+.codebox em{font-style:normal;font-size:.7rem;color:var(--accent);font-family:var(--body);letter-spacing:.08em;text-transform:uppercase}
+.tick{width:100%;height:6px;border-radius:3px;background:rgba(255,255,255,.25);margin-top:auto;overflow:hidden}
+.tick i{display:block;height:100%;width:0;background:#fff;border-radius:3px;animation:tick 3s cubic-bezier(.2,.7,.2,1) infinite}
+@keyframes tick{0%{width:0}80%{width:100%}100%{width:100%}}
+@media (prefers-reduced-motion:reduce){.tick i{animation:none;width:100%}}
+@media (max-width:820px){.t1,.t2,.t3,.t4,.t5{grid-column:span 3}}
+@media (max-width:540px){.t1,.t2,.t3,.t4,.t5{grid-column:span 6}}
+/* final cta */
+.final{margin-top:90px;text-align:center;padding:70px 20px;border-radius:28px;background:var(--tile)}
+.final h2{font-size:clamp(2rem,5vw,3.4rem);line-height:1}
+.final p{color:var(--muted);margin-top:12px}
+.hint{color:var(--muted);margin-top:14px;max-width:40em;font-size:.95rem}
+/* question stage */
+.stage{min-height:70vh;display:flex;flex-direction:column;justify-content:center;padding:40px 0;max-width:760px;margin:0 auto}
+.crumbs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:30px;min-height:30px}
+.crumb{font-size:.76rem;padding:5px 12px;border-radius:999px;border:1px solid var(--line2);color:var(--fg)}
+.qnum{color:var(--accent);font-family:var(--serif);font-style:italic;font-size:1.05rem}
+.q{font-size:clamp(2.2rem,5.6vw,4rem);line-height:1;margin-top:10px;max-width:14em}
+.answer{margin-top:36px;max-width:600px}
+input[type=text],input[type=date],select{font:inherit;font-size:1.6rem;font-family:var(--serif);width:100%;padding:14px 2px;border:0;border-bottom:1px solid var(--line2);background:none;color:var(--ink);min-width:0;border-radius:0}
+input:focus{border-bottom-color:var(--ink)}
+input::placeholder{color:var(--line2)}
+.opts{display:flex;flex-direction:column;gap:8px}
+.opt{text-align:left;background:var(--paper);border:1px solid var(--line);border-radius:14px;padding:15px 18px;font-size:1.02rem;font-weight:500;color:var(--fg);display:flex;justify-content:space-between;align-items:center;gap:12px;transition:transform .15s,border-color .15s,box-shadow .15s}
+.opt:hover{border-color:var(--ink);transform:translateX(4px)}
+.opt::after{content:"";width:18px;height:18px;border-radius:50%;border:1px solid var(--line2);flex:none;transition:background .15s,border-color .15s}
+.opt[aria-pressed="true"]{border-color:var(--ink);box-shadow:var(--sh)}
+.opt[aria-pressed="true"]::after{background:var(--accent);border-color:var(--accent);box-shadow:inset 0 0 0 4px var(--paper)}
+.opt small{color:var(--muted);font-size:.8rem;font-weight:400;margin-left:auto;margin-right:6px}
+.nav{display:flex;gap:10px;margin-top:36px;align-items:center;flex-wrap:wrap}
+.bar{height:3px;background:var(--line);margin-top:48px;overflow:hidden;border-radius:2px}
+.bar i{display:block;height:100%;background:var(--ink);transition:width .3s}
+/* generating */
+.gen{text-align:center;padding:110px 0}
+.gen h2{font-size:clamp(2rem,4.5vw,3rem)}
+.gen p{color:var(--muted);margin-top:14px;min-height:1.6em;font-family:var(--serif);font-style:italic;font-size:1.1rem}
+.ring{width:14px;height:14px;border-radius:50%;background:var(--accent);margin:0 auto 30px;animation:pulse 1.2s ease-in-out infinite}
+@keyframes pulse{50%{transform:scale(.5);opacity:.4}}
+@media (prefers-reduced-motion:reduce){.ring{animation:none}}
+/* result */
+.result{padding:30px 0}
+.cover{border-radius:24px;padding:70px 40px 40px;color:#fff;position:relative;overflow:hidden;background:var(--cv,#23205c);min-height:360px;display:flex;flex-direction:column;justify-content:flex-end}
+.cover::before{content:"";position:absolute;inset:18px;border:1px solid rgba(255,255,255,.25);border-radius:14px;pointer-events:none}
+.cover .eyebrow{color:rgba(255,255,255,.7);position:relative}
+.cover h2{color:#fff;font-family:var(--serif);font-weight:400;font-size:clamp(2.8rem,7vw,5.4rem);line-height:.95;position:relative;margin-top:12px;letter-spacing:-.01em}
+.cover p{position:relative;margin-top:16px;opacity:.8;font-size:.95rem}
+.cover .brand{position:absolute;top:36px;left:40px;font-weight:700;font-size:.9rem;opacity:.85;letter-spacing:-.02em}
+.spread{background:var(--paper);border:1px solid var(--line);border-radius:var(--r);padding:36px;margin-top:12px}
+.spread h3{font-size:clamp(1.6rem,3vw,2.2rem)}
+.spread .eyebrow{margin-bottom:8px}
+.rows{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:26px;margin-top:20px}
+.rows>div{min-width:0}
+.kv{display:flex;justify-content:space-between;gap:12px;padding:10px 0;border-bottom:1px solid var(--line);font-size:.95rem}
+.kv span:last-child{font-variant-numeric:tabular-nums;color:var(--ink);font-weight:600;text-align:right;white-space:nowrap}
+.rows h4{font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);font-weight:600;margin:0 0 8px}
+.rows ul{margin:0;padding-left:18px;font-size:.95rem}
+.rows li{margin-bottom:6px}
+.lead{margin-top:12px;font-family:var(--serif);font-size:1.5rem;line-height:1.3;color:var(--ink)}
+.letter{font-family:var(--serif);font-style:italic;font-size:1.45rem;line-height:1.4;margin-top:14px;max-width:34em;color:var(--ink)}
+.tag{display:inline-block;font-size:.66rem;letter-spacing:.1em;text-transform:uppercase;padding:3px 9px;border-radius:999px;background:var(--soft);color:var(--accent);font-weight:600;vertical-align:middle;margin-left:8px;font-family:var(--body);font-style:normal}
+.buy{margin-top:12px;background:var(--ink);color:var(--bg);border-radius:var(--r);padding:40px;display:grid;grid-template-columns:1fr auto;gap:24px;align-items:center}
+.buy h3{color:var(--bg);font-size:clamp(1.6rem,3vw,2.2rem)}
+.buy p{color:var(--bg);opacity:.7;margin-top:8px;font-size:.95rem;max-width:36em}
+.buy .price{font-family:var(--serif);font-size:3rem;color:var(--bg);line-height:1;margin-bottom:12px}
+.buy .btn{background:var(--accent);border-color:var(--accent);color:#fff}
+.buy .btn:hover{background:var(--bg);border-color:var(--bg);color:var(--ink)}
+.unlocked{display:inline-block;background:var(--accent);color:#fff;font-size:.64rem;letter-spacing:.1em;text-transform:uppercase;padding:4px 10px;border-radius:999px;font-weight:600;margin-left:10px;vertical-align:middle;font-family:var(--body)}
+.day{border:1px solid var(--line);border-radius:14px;margin-top:14px;overflow:hidden}
+.day .dh{background:var(--tile);border-bottom:1px solid var(--line);padding:12px 18px;display:flex;justify-content:space-between;gap:10px;font-weight:600;font-size:.84rem;flex-wrap:wrap;color:var(--ink)}
+.ex{display:grid;grid-template-columns:1fr auto;gap:10px;padding:11px 18px;border-bottom:1px solid var(--line);font-size:.95rem;font-weight:500;align-items:baseline}
+.ex:last-child{border-bottom:0}
+.ex small{display:block;color:var(--muted);font-size:.78rem;font-weight:400}
+.ex span:last-child{font-variant-numeric:tabular-nums;font-weight:600;color:var(--ink);white-space:nowrap}
+.restart{margin-top:18px;text-align:center}
+@media (max-width:760px){.buy{grid-template-columns:1fr}.cover{padding:70px 22px 26px}.cover .brand{left:22px}.spread{padding:22px}.hero{padding-top:60px}}
+</style>
+
+<div class="wrap">
+<nav><span class="logo"><i></i>byDigiMotto</span><div class="links"><a href="#moments">Planners</a><a href="#how">How it works</a><a href="#" id="navcode">Etsy code</a></div><button class="btn sm" id="navstart">Start</button></nav>
+
+<!-- HOME -->
+<section id="home">
+  <div class="hero">
+    <p class="eyebrow rv">Planners &amp; programs built from your answers</p>
+    <h1 class="rv d1" style="margin-top:18px">Not a template.<br>Written <em>for you.</em></h1>
+    <p class="rv d2">Seven questions. Your dates, your body, your goals and your situation run through every page. Nobody else gets the same file.</p>
+    <div class="cta rv d3"><button class="btn" id="start">Choose a planner</button><button class="btn ghost" id="havecode">I have an Etsy code</button></div>
+  </div>
+
+  <div class="show rv d4">
+    <div class="tabs" role="tablist" id="tabs">
+      <button class="tab" role="tab" aria-selected="true" data-t="preg">Pregnancy</button>
+      <button class="tab" role="tab" aria-selected="false" data-t="gym">Gym program</button>
+      <button class="tab" role="tab" aria-selected="false" data-t="wed">Wedding</button>
+      <button class="tab" role="tab" aria-selected="false" data-t="pup">New puppy</button>
+    </div>
+    <div class="stagebox"><div class="sheet" id="sheet" aria-hidden="true"></div></div>
+    <p class="caption" id="caption">Every number on this page came from four answers.</p>
+  </div>
+
+  <div class="stats">
+    <div class="stat rv"><b data-n="4000" data-suf="+">0</b><span>Etsy orders</span></div>
+    <div class="stat rv d1"><b data-n="7">0</b><span>questions, two minutes</span></div>
+    <div class="stat rv d2"><b data-n="60" data-suf="s">0</b><span>until your planner is ready</span></div>
+    <div class="stat rv d3"><b data-n="1">0</b><span>copy in the world: yours</span></div>
+  </div>
+
+  <div class="moments" id="moments">
+    <div class="sec-h rv"><p class="eyebrow">Choose a planner</p><h2>Pick your <em>chapter.</em></h2><p class="sub">Every planner starts with a free preview built from your answers. The full edition unlocks with the code from your Etsy order.</p></div>
+    <div class="cards" id="cards"></div>
+  </div>
+
+  <div class="bento" id="how">
+    <div class="sec-h rv"><p class="eyebrow">How it works</p><h2>Three steps, <em>one minute.</em></h2></div>
+    <div class="bgrid">
+      <div class="tile t1 rv"><h3>Your dates, computed.</h3><p>Due day, frost date, race day, wedding day: every page counts from the day you give us. Weeks, deadlines and check-ups land on real calendar dates.</p><div class="flow"><span>Due 14 Mar</span><i>→</i><span>Week 23 today</span><i>→</i><span>EI claim 20 Dec</span><i>→</i><span>Bag by wk 34</span></div></div>
+      <div class="tile t2 orange rv d1"><h3>Ready in</h3><div class="big">60s</div><p>From last answer to finished planner.</p><div class="tick"><i></i></div></div>
+      <div class="tile t3 rv"><h3>One code, one edition.</h3><p>Your Etsy download holds a single-use code. It unlocks one planner, then it's spent.</p><div class="codebox">DM-7K2P-Q9XA <em>used ✓</em></div></div>
+      <div class="tile t4 dark rv d1"><h3>Country-aware.</h3><p>Leave rules, vaccine schedules, registration deadlines: written for where you live, not a generic version.</p><div class="chips" style="margin-top:auto"><span style="background:rgba(255,255,255,.1);border-color:transparent;color:#fff">🇨🇦 EI claim</span><span style="background:rgba(255,255,255,.1);border-color:transparent;color:#fff">🇬🇧 MATB1</span><span style="background:rgba(255,255,255,.1);border-color:transparent;color:#fff">🇩🇪 Mutterpass</span></div></div>
+      <div class="tile t5 rv d2"><h3>Online and on paper.</h3><p>An interactive planner you can tick through, plus a printable PDF of the same edition.</p><div class="big" style="font-size:2.6rem">PDF + web</div></div>
+    </div>
+  </div>
+
+  <div class="final rv">
+    <h2>Start with the <em>free preview.</em></h2>
+    <p>Pick a planner, answer seven questions, see your first pages.</p>
+    <div class="cta"><button class="btn" id="start2">Choose a planner</button></div>
+  </div>
+</section>
+
+<!-- CODE -->
+<section id="code" class="stage" hidden>
+  <p class="qnum">Unlock</p>
+  <h2 class="q">Enter your Etsy code</h2>
+  <p class="hint">It's inside the PDF you downloaded from Etsy. One code, one planner. Entering it twice won't work.</p>
+  <div class="answer"><input type="text" id="codein" placeholder="DM-XXXX-XXXX" autocomplete="off"></div>
+  <p class="hint" id="codemsg" style="color:var(--accent);font-weight:600"></p>
+  <div class="nav"><button class="btn ghost" id="codeback">Back</button><button class="btn" id="codego">Unlock</button><span class="hint" style="margin:0;font-size:.8rem">demo: try DM-2026-TEST</span></div>
+</section>
+
+<!-- QUESTIONS -->
+<section id="ask" class="stage" hidden>
+  <div class="crumbs" id="crumbs"></div>
+  <p class="qnum" id="qnum"></p>
+  <h2 class="q" id="qtext"></h2>
+  <p class="hint" id="qhint"></p>
+  <div class="answer" id="answer"></div>
+  <div class="nav"><button class="btn ghost" id="back">Back</button><button class="btn" id="next">Continue</button><span class="hint" style="margin:0;font-size:.8rem">press Enter ↵</span></div>
+  <div class="bar"><i id="bar" style="width:0"></i></div>
+</section>
+
+<!-- GENERATING -->
+<section id="gen" class="gen" hidden>
+  <div class="ring"></div>
+  <h2 id="gen-h">Writing your planner</h2>
+  <p id="gen-p"></p>
+</section>
+
+<!-- RESULT -->
+<section id="result" class="result" hidden>
+  <div class="cover" id="cover"><span class="brand">byDigiMotto</span><p class="eyebrow" id="r-eyebrow"></p><h2 id="r-title"></h2><p id="r-sub"></p></div>
+  <div id="spreads"></div>
+  <div class="buy">
+    <div><h3 id="buy-h">This is a free preview.</h3><p id="buy-p">The full edition runs to every week and every page. Buy on Etsy, enter the code here, and it's yours within a minute: interactive online plus a printable PDF.</p></div>
+    <div style="text-align:center"><div class="price" id="price">$24</div><button class="btn" id="buybtn">Get it on Etsy</button></div>
+  </div>
+  <p class="restart"><button class="btn ghost" id="restart">Try another planner</button></p>
+</section>
+</div>
+
+<script>
+(function(){
+  const $=id=>document.getElementById(id);
+  document.body.classList.add('js');
+  // reveal
+  const rv=[...document.querySelectorAll('.rv')];
+  const io=('IntersectionObserver' in window)?new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target);}}),{threshold:.12}):null;
+  rv.forEach(el=>io?io.observe(el):el.classList.add('in'));
+  setTimeout(()=>rv.forEach(el=>el.classList.add('in')),2500);
+  // counters
+  const counted=new Set();
+  const cio=('IntersectionObserver' in window)?new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting&&!counted.has(e.target)){counted.add(e.target);run(e.target);}})):null;
+  document.querySelectorAll('[data-n]').forEach(b=>cio?cio.observe(b):run(b));
+  function run(b){const n=+b.dataset.n,suf=b.dataset.suf||'',t0=performance.now(),d=1200;const f=t=>{const p=Math.min(1,(t-t0)/d),e=1-Math.pow(1-p,3);b.textContent=Math.round(n*e).toLocaleString('en-US')+suf;if(p<1)requestAnimationFrame(f);};requestAnimationFrame(f);}
+  // showcase tabs
+  const S={
+   preg:{cap:'Every number on this page came from four answers.',html:`<div class="top"><span class="eyebrow">Pregnancy · week 23</span><span class="wk">Due 14 Mar 2027</span></div><h4>Emma &amp; Daniel</h4><div class="grid7"><span>M</span><span>T</span><span>W</span><span>T</span><span>F</span><span>S</span><span>S</span><span>8</span><span>9</span><span class="dot">10</span><span>11</span><span>12</span><span>13</span><span>14</span><span>15</span><span class="on">16</span><span>17</span><span>18</span><span class="dot">19</span><span>20</span><span>21</span></div><div class="li" style="margin-top:16px"><span>Anatomy scan</span><b>done ✓</b></div><div class="li"><span>Canada EI claim opens</span><b>20 Dec</b></div><div class="li"><span>Daniel: support page</span><b>this week</b></div><div class="note">Tell your employer by week 25 to keep your leave. Deadline marked on 19 Dec.</div>`},
+   gym:{cap:'Split, sets and calories from a body, a goal and a schedule.',html:`<div class="top"><span class="eyebrow">12-week program · week 5</span><span class="wk">Upper / Lower · 4 × 60 min</span></div><h4>Alex's build</h4><div class="chips"><span>84 kg → 87 kg</span><span>2,940 kcal</span><span>168 g protein</span><span>knee safe</span></div><div class="li" style="margin-top:16px"><span>Leg press</span><b>3 × 8–12</b></div><div class="li"><span>Romanian deadlift</span><b>3 × 8–12</b></div><div class="li"><span>Hip thrust</span><b>3 × 10</b></div><div class="pbar"><i id="pb" style="width:0"></i></div><div class="li" style="border:0;padding-top:8px"><span>Week 5 of 12</span><b>+7.5 kg on squat</b></div>`},
+   wed:{cap:'A short engagement gets a compressed plan, not a 12-month one.',html:`<div class="top"><span class="eyebrow">Wedding · 131 days</span><span class="wk">12 Mar 2027 · Italy</span></div><h4>Sofia &amp; Luca</h4><div class="li" style="margin-top:16px"><span>Lock the venue</span><b>done ✓</b></div><div class="li"><span>Send invitations</span><b>by 2 Dec</b></div><div class="li"><span>Final guest count</span><b>26 Feb</b></div><div class="li"><span>Budget used</span><b>$18,400 / $30k</b></div><div class="pbar"><i id="pb" style="width:0"></i></div><div class="note">Civil ceremony in Italy: the nulla osta paperwork is first on your list.</div>`},
+   pup:{cap:'Vaccines and training dated from the day the puppy comes home.',html:`<div class="top"><span class="eyebrow">New puppy · week 2</span><span class="wk">Golden retriever · 10 wks</span></div><h4>Biscuit</h4><div class="li" style="margin-top:16px"><span>Vaccination 2</span><b>18 Nov</b></div><div class="li"><span>Socialisation window closes</span><b>16 Dec</b></div><div class="li"><span>First walk outside</span><b>30 Dec</b></div><div class="li"><span>Alone-time training</span><b>2 × 10 min / day</b></div><div class="note">UK: register the microchip to you, not the breeder, this week.</div>`}
+  };
+  let cur='preg';
+  function setSheet(k){const sh=$('sheet');sh.classList.add('swap');setTimeout(()=>{sh.innerHTML=S[k].html;$('caption').textContent=S[k].cap;sh.classList.remove('swap');const pb=$('pb');if(pb)requestAnimationFrame(()=>requestAnimationFrame(()=>pb.style.width=k==='gym'?'42%':'61%'));},220);}
+  $('sheet').innerHTML=S.preg.html;
+  $('tabs').addEventListener('click',e=>{const t=e.target.closest('.tab');if(!t||t.dataset.t===cur)return;cur=t.dataset.t;[...$('tabs').children].forEach(x=>x.setAttribute('aria-selected',x===t));setSheet(cur);});
+  let auto=setInterval(()=>{const ks=Object.keys(S);cur=ks[(ks.indexOf(cur)+1)%ks.length];[...$('tabs').children].forEach(x=>x.setAttribute('aria-selected',x.dataset.t===cur));setSheet(cur);},5000);
+  $('tabs').addEventListener('click',()=>{clearInterval(auto);});
+  // nav shortcuts
+  $('navstart').addEventListener('click',()=>{if($('home').hidden){['code','ask','gen','result'].forEach(i=>$(i).hidden=true);$('home').hidden=false;}$('moments').scrollIntoView({behavior:'smooth'});});
+  $('start2').addEventListener('click',()=>$('moments').scrollIntoView({behavior:'smooth'}));
+  $('navcode').addEventListener('click',e=>{e.preventDefault();$('havecode').click();});
+})();
+</script>
+<script>
+(function(){
+const $=id=>document.getElementById(id);
+const addDays=(d,n)=>{const x=new Date(d);x.setDate(x.getDate()+n);return x;};
+const fmt=d=>d.toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'});
+const fmtS=d=>d.toLocaleDateString('en-GB',{day:'numeric',month:'short'});
+const today=new Date(); today.setHours(12,0,0,0);
+const iso=d=>d.toISOString().slice(0,10);
+const COUNTRIES=['United States','United Kingdom','Canada','Australia','Germany','Netherlands','France','Ireland','Türkiye','Other'];
+const cSel={type:'select',options:COUNTRIES};
+
+/* ---------- MOMENTS ---------- */
+const M={
+gym:{title:'12-Week Gym Program',blurb:'Split, sets and calories from your body and your week',color:'#1f1d2e',price:'$19',
+ q:[
+  {k:'name',q:"What's your name?",type:'text',ph:'Alex'},
+  {k:'sex',q:'Biological sex',hint:'Used only for the calorie formula.',type:'choice',options:[['m','Male'],['f','Female']]},
+  {k:'age',q:'How old are you?',type:'choice',options:[['22','18 – 25'],['30','26 – 35'],['41','36 – 45'],['52','46 – 60'],['65','Over 60']]},
+  {k:'body',q:'Height and weight',hint:'Centimetres and kilograms.',type:'pair',a:['Height (cm)','178'],b:['Weight (kg)','84']},
+  {k:'goal',q:'What is the goal?',type:'choice',options:[['fat','Lose fat','Keep muscle, drop body fat'],['muscle','Build muscle','Hypertrophy focus'],['strength','Get stronger','Heavy compounds, low reps'],['fit','Get fit & feel better','Balanced, general fitness']]},
+  {k:'level',q:'Training experience',type:'choice',options:[['new','Never trained properly'],['some','Less than a year'],['mid','1 – 3 years'],['adv','More than 3 years']]},
+  {k:'days',q:'How many days a week can you train?',type:'choice',options:[['2','2 days'],['3','3 days'],['4','4 days'],['5','5 – 6 days']]},
+  {k:'mins',q:'How long is a session?',type:'choice',options:[['30','30 minutes'],['45','45 minutes'],['60','60 minutes'],['90','90 minutes']]},
+  {k:'where',q:'Where will you train?',type:'choice',options:[['gym','Full gym'],['home','Home, dumbbells & bands'],['none','Home, no equipment']]},
+  {k:'avoid',q:'Anything to protect?',hint:'We swap out the exercises that load it.',type:'choice',options:[['none','Nothing, I\'m good'],['knee','Knees'],['back','Lower back'],['shoulder','Shoulders']]}
+ ],
+ build(a){
+  const h=+a.body.a,w=+a.body.b,age=+a.age,d=+a.days,m=+a.mins;
+  const bmi=(w/((h/100)**2)).toFixed(1);
+  const bmr=Math.round(10*w+6.25*h-5*age+(a.sex==='m'?5:-161));
+  const act={2:1.35,3:1.45,4:1.55,5:1.65}[d];
+  const tdee=Math.round(bmr*act);
+  const target=a.goal==='fat'?tdee-450:a.goal==='muscle'?tdee+300:a.goal==='strength'?tdee+150:tdee;
+  const protein=Math.round(w*(a.goal==='fat'?2.0:1.8));
+  const split={2:'Full body ×2',3:a.level==='new'||a.level==='some'?'Full body ×3':'Push / Pull / Legs',4:'Upper / Lower ×2',5:'Push / Pull / Legs + Upper / Lower'}[d];
+  const nEx={30:4,45:5,60:7,90:8}[m];
+  const sets=a.goal==='strength'?'4 × 4–6':a.goal==='fat'?'3 × 12–15':a.goal==='muscle'?'3 × 8–12':'3 × 10–12';
+  const rest=a.goal==='strength'?'2–3 min':a.goal==='fat'?'45–60 s':'90 s';
+  // exercise pool: [name, pattern, equipment, loads]
+  const pool=[
+   ['Back squat','legs','gym','knee back'],['Goblet squat','legs','home','knee'],['Leg press','legs','gym','knee'],['Romanian deadlift','hinge','gym','back'],['Dumbbell RDL','hinge','home','back'],['Hip thrust','hinge','gym',''],['Glute bridge','hinge','none',''],['Bulgarian split squat','legs','home','knee'],['Step-up','legs','home',''],['Wall sit','legs','none','knee'],['Bodyweight squat','legs','none','knee'],
+   ['Bench press','push','gym','shoulder'],['Dumbbell bench press','push','home','shoulder'],['Push-up','push','none','shoulder'],['Floor press','push','home',''],['Incline push-up','push','none',''],['Overhead press','push','gym','shoulder'],['Landmine press','push','gym',''],['Dumbbell lateral raise','push','home','shoulder'],
+   ['Barbell row','pull','gym','back'],['Chest-supported row','pull','gym',''],['One-arm dumbbell row','pull','home',''],['Lat pulldown','pull','gym',''],['Pull-up / assisted pull-up','pull','gym',''],['Band pull-apart','pull','home',''],['Inverted row (table)','pull','none',''],['Superman hold','pull','none','back'],
+   ['Plank','core','none',''],['Dead bug','core','none',''],['Pallof press','core','gym',''],['Hanging knee raise','core','gym','back'],['Farmer carry','core','home','']
+  ];
+  const eqOk={gym:['gym','home','none'],home:['home','none'],none:['none']}[a.where];
+  const ok=pool.filter(e=>eqOk.includes(e[2])&&!(a.avoid!=='none'&&e[3].includes(a.avoid)));
+  const pick=(pat,n,used)=>ok.filter(e=>e[1]===pat&&!used.has(e[0])).slice(0,n).map(e=>{used.add(e[0]);return e[0];});
+  const used=new Set();
+  const dayA=[...pick('legs',2,used),...pick('push',2,used),...pick('pull',2,used),...pick('core',1,used)].slice(0,nEx);
+  const dayB=[...pick('hinge',2,used),...pick('push',1,used),...pick('pull',2,used),...pick('legs',1,used),...pick('core',1,used)].slice(0,nEx);
+  const swapped={knee:'Knee-loading squats are swapped for hinge and glute work.',back:'Spinal-loaded lifts are out; rows are chest-supported, hinges are light.',shoulder:'Overhead and barbell pressing are replaced with neutral-grip and floor variations.',none:'No restrictions, full exercise pool.'}[a.avoid];
+  const dayCard=(title,list)=>`<div class="day"><div class="dh"><span>${title}</span><span>${m} min · ${sets} · rest ${rest}</span></div>${list.map((e,i)=>`<div class="ex"><span>${e}<small>${i===0?'Warm-up set first, then working sets':'Last set close to failure'}</small></span><span>${sets}</span></div>`).join('')}</div>`;
+  const tone=a.level==='new'?`First time training properly, so weeks 1–2 are about learning the movements with light weight; the numbers only start climbing in week 3.`:a.level==='adv'?`You have the base, so the program skips the hand-holding and loads from week 1 with a deload in weeks 4 and 8.`:`Enough experience to push, not enough to need periodisation tricks: steady weekly progression, deload in week 6.`;
+  return {eyebrow:'12-Week Program',title:`${a.name}'s<br>${{fat:'cut',muscle:'build',strength:'strength block',fit:'reset'}[a.goal]}`,sub:`${split} · ${d} days × ${m} min · ${a.where==='gym'?'gym':a.where==='home'?'home, dumbbells':'bodyweight'}`,
+   spreads:[
+    {eb:'Computed from your body and your week',h:'Your numbers',body:`<div class="rows"><div>${kv('BMI',bmi)}${kv('Resting burn (BMR)',bmr+' kcal')}${kv('Daily burn with training',tdee+' kcal')}${kv('Daily target for '+a.goal,target+' kcal')}${kv('Protein per day',protein+' g')}${kv('Water',Math.round(w*35/100)/10+' L')}</div><div><h4>Program shape</h4>${kv('Split',split)}${kv('Exercises per session',nEx)}${kv('Sets × reps',sets)}${kv('Rest',rest)}${kv('Deload',a.level==='adv'?'Weeks 4 & 8':'Week 6')}</div></div><p class="hint" style="margin-top:14px">Formula: Mifflin-St Jeor. Not medical advice; check with a doctor before starting if you have a condition.</p>`},
+    {eb:'Week 1 · two of your '+d+' sessions',h:'The sessions',body:`<p class="lead">${tone}<span class="tag">${a.avoid==='none'?'full pool':a.avoid+' safe'}</span></p><p class="hint">${swapped}</p>${dayCard('Day 1 · '+(d>=4?'Upper':'Full body A'),dayA)}${dayCard('Day 2 · '+(d>=4?'Lower':'Full body B'),dayB)}<p class="hint" style="margin-top:12px">Full edition: all ${d} days × 12 weeks, with weight and rep boxes, and a progression rule per exercise.</p>`},
+    {eb:'Something only yours',h:'The 12-week ledger',body:`<p class="letter">Week 1: ${w} kg. Target by week 12: ${a.goal==='fat'?Math.round(w-5)+'–'+Math.round(w-3)+' kg, same strength':a.goal==='muscle'?Math.round(w+1)+'–'+Math.round(w+3)+' kg, mostly muscle':'same weight, every lift up 10–20%'}. Weekly photo, waist, and the one number ${a.name} cares about.</p>`}
+   ]};
+ }},
+pregnancy:{title:'Pregnancy & Birth',blurb:'40 weeks, dated to your due day',color:'#7a3b4a',price:'$24',
+ q:[
+  {k:'name',q:"What's your first name?",hint:'It goes on the cover and into every page.',type:'text',ph:'Emma'},
+  {k:'partner',q:'Is there a partner joining the journey?',hint:'Leave blank if not. If there is, they get their own support pages.',type:'text',ph:'Daniel',opt:true},
+  {k:'due',q:'When is your baby due?',hint:'We count 40 weeks back from this day.',type:'date',def:iso(addDays(today,130))},
+  {k:'country',q:'Which country do you live in?',hint:'Leave rules, paperwork and check-up schedules differ a lot.',...cSel},
+  {k:'first',q:'Is this your first baby?',type:'choice',options:[['yes','Yes, my first'],['no','No, I have children already']]},
+  {k:'birth',q:'Where are you hoping to give birth?',type:'choice',options:[['hospital','Hospital'],['centre','Birth centre'],['home','At home'],['unsure','Not decided yet','We leave that page open and help you choose']]},
+  {k:'work',q:'How do you work right now?',type:'choice',options:[['office','Employed, at a workplace'],['remote','Employed, remote'],['self','Self-employed / freelance'],['none','Not working at the moment']]}
+ ],
+ build(a){
+  const due=new Date(a.due+'T12:00:00'),start=addDays(due,-280);
+  const wk=Math.min(40,Math.max(1,Math.floor((today-start)/864e5/7)+1));
+  const ws=addDays(start,(wk-1)*7);
+  const who=a.partner?`${a.name} & ${a.partner}`:a.name;
+  const leave={'United States':'Ask HR whether FMLA covers you; short-term disability usually pays for the birth weeks.','United Kingdom':'Tell your employer by week 25 to keep Statutory Maternity Pay; your MATB1 arrives around week 20.','Canada':'EI maternity benefits can start 12 weeks before your due date; some provinces need a separate employer top-up form.','Germany':'Mutterschutz begins six weeks before your due date; your Mutterpass comes from your first visit.','Australia':'Lodge your Parental Leave Pay claim with Centrelink up to three months early.','Türkiye':'Doğum izni 16 haftadır; hekim raporuyla 3 haftaya kadar doğum öncesi izin sonraya aktarılabilir.'}[a.country]||'Check your national parental-leave rules this week and note the notice deadline on your timeline.';
+  const workLine={office:'a hand-over plan for your team starts at week 30',remote:'a remote hand-over checklist starts at week 30',self:'client notices and a cover plan start at week 28',none:'the work pages are replaced with a nesting & rest schedule'}[a.work];
+  return {eyebrow:'Pregnancy & Birth Planner',title:`${who}<br>are expecting`,sub:`Due ${fmt(due)} · ${a.country} · ${a.first==='yes'?'First baby':'Growing the family'}`,
+   spreads:[
+    {eb:'Computed from your due date',h:`You are in week ${wk}`,body:`<div class="rows"><div>${kv('Pregnancy began',fmt(start))}${kv('This week',fmtS(ws)+' – '+fmtS(addDays(ws,6)))}${kv('Second trimester',fmt(addDays(start,13*7)))}${kv('Third trimester',fmt(addDays(start,27*7)))}${kv('Full term',fmt(addDays(start,37*7)))}${kv('Due day',fmt(due))}</div><div><h4>How your edition differs</h4><ul><li>Birth pages written for a ${a.birth==='unsure'?'choice you have not made yet':a.birth+' birth'}</li><li>Because ${a.work==='none'?'you are not working,':'of how you work,'} ${workLine}</li><li>${a.partner?a.partner+' gets a weekly "how to help" page':'Written for one; no partner pages'}</li></ul></div></div>`},
+    {eb:`Week ${wk} · a sample page`,h:'What this week looks like',body:`<p class="lead">${a.first==='yes'?'Everything is new this time, so this week leans on reassurance: ':'You have done this before, so this week skips the basics: '}the baby ${wk<14?'is forming organs and your fatigue is hormones at work':wk<28?'can hear your voice and you may feel the first movements':'is practising breathing and dropping lower; rest when you can'}.<span class="tag">written for ${a.name}</span></p><div class="rows"><div><h4>To do</h4><ul><li>${wk<14?'Book the first scan':wk<28?'Attend the anatomy scan':'Pack the first draft of the hospital bag'}</li><li>${a.work==='none'?'Set up the rest corner at home':'Check your leave deadline (see note)'}</li><li>${a.partner?'Ask '+a.partner+' to read the support page':'Choose your birth companion'}</li></ul></div><div><h4>${a.country} note</h4><p style="font-size:.95rem">${leave}</p></div></div>`},
+    {eb:'Something only yours',h:'A letter to begin',body:`<p class="letter">Dear little one, it is ${fmtS(today)} and you are due on ${fmtS(due)}. ${a.partner?a.partner+' and I':'I'} ${a.first==='yes'?'have never done this before, and we are learning you before we have met you':'already know how fast these months go, and I promise to slow down for you'}…</p><p class="hint">The planner starts the letter; you finish it. One per trimester.</p>`}
+   ]};
+ }},
+wedding:{title:'The Wedding',blurb:'Countdown built from your date and your traditions',color:'#23205c',price:'$29',
+ q:[
+  {k:'names',q:'Whose wedding is it?',hint:'Both names, as you want them on the cover.',type:'text',ph:'Sofia & Luca'},
+  {k:'date',q:'When is the big day?',hint:'Everything counts back from here.',type:'date',def:iso(addDays(today,240))},
+  {k:'country',q:'Where will it take place?',...cSel},
+  {k:'ceremony',q:'What kind of ceremony?',type:'choice',options:[['civil','Civil ceremony'],['religious','Religious ceremony'],['both','Civil and religious, separate days'],['elope','Elopement or very small']]},
+  {k:'guests',q:'Roughly how many guests?',type:'choice',options:[['30','Under 50'],['90','50 – 120'],['160','120 – 200'],['260','More than 200']]},
+  {k:'budget',q:'Which budget band feels right?',type:'choice',options:[['8000','Up to $10k'],['20000','$10k – $30k'],['45000','$30k – $60k'],['90000','Above $60k']]},
+  {k:'style',q:'Pick the word that fits the day',type:'choice',options:[['intimate','Intimate'],['classic','Classic'],['modern','Modern'],['festive','Big and festive']]}
+ ],
+ build(a){
+  const d=new Date(a.date+'T12:00:00'),days=Math.round((d-today)/864e5),weeks=Math.floor(days/7);
+  const g=+a.guests,b=+a.budget,per=Math.round(b/g);
+  const ms=[['Lock the venue',Math.min(2,weeks-2)],['Book photographer & catering',Math.round(weeks*0.25)],['Send invitations',weeks-10],['Final guest count to venue',weeks-2],['Rehearsal',weeks-0.15]].filter(x=>x[1]>0&&x[1]<weeks);
+  const compressed=weeks<16;
+  return {eyebrow:'Wedding Planner',title:a.names.replace('&','&amp;'),sub:`${fmt(d)} · ${a.country} · ${g>200?'200+':g+'-ish'} guests · ${a.style}`,
+   spreads:[
+    {eb:'Computed from your date',h:`${days} days, ${weeks} weeks to go`,body:`<p class="lead">${compressed?'A short engagement, so the usual 12-month plan is compressed into '+weeks+' weeks and the first three milestones land this fortnight.':'You have time; the plan paces decisions so nothing lands in the final month.'}</p><div class="rows"><div>${ms.map(m=>kv(m[0],fmtS(addDays(today,Math.round(m[1]*7))))).join('')}${kv('The day',fmt(d))}</div><div><h4>Budget split · ${a.style}</h4>${kv('Venue & food',pct(b,a.style==='intimate'?.38:.48))}${kv('Photo & video',pct(b,.12))}${kv('Attire & rings',pct(b,.1))}${kv('Flowers & décor',pct(b,a.style==='festive'?.14:.09))}${kv('Per guest',' $'+per)}</div></div>`},
+    {eb:'Your ceremony',h:ceremonyTitle(a.ceremony),body:`<p class="lead">${{civil:'A civil ceremony means paperwork first: the notice period in '+a.country+' is on page one of your timeline, with the registry booking as the first task.',religious:'A religious ceremony brings its own calendar: preparation meetings, readings to choose and a venue that is often booked before the reception.',both:'Two days, two timelines. Your planner runs them side by side so the civil paperwork and the religious preparation never collide.',elope:'An elopement strips the plan to what matters: the paperwork, the two of you, one photographer and a very good dinner.'}[a.ceremony]}<span class="tag">written for ${a.names.split('&')[0].trim()}</span></p><div class="rows"><div><h4>Pages in your edition</h4><ul><li>${a.ceremony==='elope'?'Travel & legal checklist':'Seating planner for '+g+' guests'}</li><li>Vendor tracker sized to your ${b>=45000?'full-service':'hands-on'} budget</li><li>${a.ceremony==='religious'||a.ceremony==='both'?'Order of service template':'Ceremony script builder'}</li></ul></div><div><h4>Not in your edition</h4><ul><li>${g<50?'Large-wedding logistics (shuttles, multiple caterers)':'Elopement travel pages'}</li><li>${a.style==='modern'?'Traditional etiquette chapter':'Minimalist-styling chapter'}</li></ul></div></div>`},
+    {eb:'Something only yours',h:'Vows, started for you',body:`<p class="letter">${a.names.split('&')[0].trim()}, on ${fmtS(d)} in ${a.country === 'Other'?'a place you chose':a.country}, in front of ${g<50?'the few people who matter most':'everyone who has watched you become who you are'}, you will say…</p><p class="hint">Three prompts per person, built from your answers. Nobody reads them but you.</p>`}
+   ]};
+ }},
+baby:{title:"Baby's First Year",blurb:'Dated to the birthday, down to the check-ups',color:'#2f5f7a',price:'$24',
+ q:[
+  {k:'baby',q:"What is your baby's name?",type:'text',ph:'Mia'},
+  {k:'born',q:'When were they born?',type:'date',def:iso(addDays(today,-45))},
+  {k:'country',q:'Where do you live?',hint:'Check-up and vaccination schedules follow your country.',...cSel},
+  {k:'feeding',q:'How are you feeding?',type:'choice',options:[['breast','Breastfeeding'],['formula','Formula'],['mixed','A mix'],['tbd','Still figuring it out']]},
+  {k:'work',q:'When do you go back to work?',hint:'Leave blank if you are not.',type:'date',opt:true},
+  {k:'sleep',q:'Where does the baby sleep?',type:'choice',options:[['room','In our room'],['own','Own room'],['cosleep','Co-sleeping']]},
+  {k:'carer',q:'Who else will be caring for the baby?',type:'choice',options:[['partner','My partner'],['family','Grandparents / family'],['nursery','Nursery or childminder'],['me','Mostly me']]}
+ ],
+ build(a){
+  const b=new Date(a.born+'T12:00:00'),age=Math.floor((today-b)/864e5),wks=Math.floor(age/7);
+  const checks=[['6-week check',42],['2-month visit',61],['4-month visit',122],['6-month visit',183],['9-month visit',274],['First birthday',365]];
+  const work=a.work?new Date(a.work+'T12:00:00'):null;
+  return {eyebrow:"Baby's First Year",title:`${a.baby}'s<br>first year`,sub:`Born ${fmt(b)} · ${a.country} · ${wks} weeks old today`,
+   spreads:[
+    {eb:'Computed from the birthday',h:`${a.baby} is ${wks} weeks old`,body:`<div class="rows"><div>${checks.map(c=>kv(c[0],fmtS(addDays(b,c[1]))+(addDays(b,c[1])<today?' ✓':''))).join('')}</div><div><h4>Your year, in order</h4><ul><li>${work?'Back to work on '+fmtS(work)+', when '+a.baby+' is '+Math.floor((work-b)/864e5/7)+' weeks old; the hand-over pages start four weeks before':'No return-to-work date; those pages are replaced with a rhythm planner'}</li><li>Solids window opens around ${fmtS(addDays(b,170))}</li><li>${a.sleep==='own'?'Own-room transition pages from month 4':a.sleep==='cosleep'?'Safe co-sleeping checklist on page one':'Room-sharing to own-room guide at month 6'}</li></ul></div></div>`},
+    {eb:`Week ${wks} · a sample page`,h:'This week with '+a.baby,body:`<p class="lead">${wks<12?a.baby+' is in the fourth trimester: short waking windows, lots of contact, and your own recovery matters as much as theirs.':wks<26?'Smiles, longer naps and the first rolls. Feeding gets quicker; sleep gets messier before it gets better.':'Sitting, solids and separation awareness. The world is suddenly very interesting.'}<span class="tag">${a.feeding==='breast'?'breastfeeding':a.feeding==='formula'?'formula':'mixed'} edition</span></p><div class="rows"><div><h4>To do</h4><ul><li>${a.feeding==='breast'?'Note feed lengths for the next check-up':a.feeding==='formula'?'Review the formula amount for this weight band':'Decide which feeds stay breast this month'}</li><li>${a.carer==='nursery'?'Visit two settings; settling-in starts 3 weeks before work':a.carer==='family'?'Write the one-page routine for family carers':'Share the routine page with '+(a.carer==='partner'?'your partner':'yourself; book one hour that is only yours')}</li></ul></div><div><h4>${a.country} note</h4><p style="font-size:.95rem">${{'United Kingdom':'Register the birth within 42 days; your health visitor will book the 6-8 week review.','United States':'Add '+a.baby+' to your health insurance within 30 days of birth.','Germany':'Kindergeld and Elterngeld applications: the Elterngeld one is worth filing this month.','Canada':'Apply for the Canada Child Benefit through the birth-registration bundle.','Australia':'Lodge the newborn claim for Family Tax Benefit through myGov.','Türkiye':'Doğum raporuyla nüfus kaydı 30 gün içinde; aile hekimine kayıt aynı hafta.'}[a.country]||'Register the birth and add '+a.baby+' to your health cover this month.'}</p></div></div>`},
+    {eb:'Something only yours',h:'Twelve monthly letters',body:`<p class="letter">${a.baby}, you are ${wks} weeks old and today you… </p><p class="hint">A dated letter each month on the ${b.getDate()}${ord(b.getDate())}, started by the planner, finished by you. Printed together at the end as a small book.</p>`}
+   ]};
+ }},
+puppy:{title:'The New Puppy',blurb:'Vaccines, training and growth for this breed',color:'#7a5a2a',price:'$19',
+ q:[
+  {k:'dog',q:"What is the puppy's name?",type:'text',ph:'Biscuit'},
+  {k:'size',q:'What size will they grow to?',hint:'Pick the breed group; the growth and feeding pages depend on it.',type:'choice',options:[['small','Small','Under 10 kg · dachshund, pug, terrier'],['medium','Medium','10–25 kg · beagle, cocker, border collie'],['large','Large','25–45 kg · labrador, golden, shepherd'],['giant','Giant','45 kg+ · great dane, newfoundland']]},
+  {k:'breed',q:'And the breed, if you know it',type:'text',ph:'Golden retriever',opt:true},
+  {k:'arrive',q:'When does the puppy come home?',type:'date',def:iso(addDays(today,10))},
+  {k:'age',q:'How old will they be on that day?',type:'choice',options:[['8','8 weeks'],['10','10 weeks'],['12','12 weeks'],['16','Older than 12 weeks']]},
+  {k:'country',q:'Where do you live?',...cSel},
+  {k:'home',q:'Who is home during the day?',type:'choice',options:[['always','Someone is always home'],['half','Home half the day'],['out','Out most of the day']]}
+ ],
+ build(a){
+  const arr=new Date(a.arrive+'T12:00:00'),born=addDays(arr,-(+a.age)*7);
+  const adult={small:'about 12 months',medium:'about 14 months',large:'about 18 months',giant:'up to 24 months'}[a.size];
+  const name=a.breed||`${a.size} breed`;
+  return {eyebrow:'New Puppy Planner',title:`${a.dog}<br>comes home`,sub:`${fmt(arr)} · ${name} · ${a.country}`,
+   spreads:[
+    {eb:'Computed from the arrival date',h:'First weeks, dated',body:`<div class="rows"><div>${kv('Born (approx.)',fmtS(born))}${kv('Home day',fmt(arr))}${kv('Vaccination 2',fmtS(addDays(born,84)))}${kv('Vaccination 3',fmtS(addDays(born,112)))}${kv('Can walk outside',fmtS(addDays(born,126)))}${kv('Socialisation window closes',fmtS(addDays(born,112)))}${kv('Fully grown',adult)}</div><div><h4>Edition notes</h4><ul><li>${a.home==='out'?'Crate and alone-time training starts day two, because the house is empty most days':a.home==='half'?'Alone-time training in short steps from week two':'Independence training added on purpose, since someone is always home'}</li><li>Feeding chart for a ${a.size} breed, by week</li><li>${a.size==='giant'||a.size==='large'?'Joint-safe exercise limits by age':'Small-dog house-training schedule (more frequent trips)'}</li></ul></div></div>`},
+    {eb:'Week 1 · a sample page',h:`${a.dog}'s first seven days`,body:`<p class="lead">${a.dog} arrives at ${a.age} weeks${+a.age<=8?', right at the start of the socialisation window, so this week is about gentle new sounds, surfaces and people':', with some of the socialisation window already used; this week doubles the positive exposures'}.<span class="tag">${name}</span></p><div class="rows"><div><h4>Daily</h4><ul><li>Toilet trips every ${a.size==='small'?'60':'90'} minutes while awake</li><li>Three 5-minute name & recall games</li><li>${a.home==='out'?'Two short alone sessions, door closed':'One nap in the crate with the door open'}</li></ul></div><div><h4>${a.country} note</h4><p style="font-size:.95rem">${{'United Kingdom':'Microchipping is legal by 8 weeks; register the chip to you, not the breeder, this week.','United States':'Rabies vaccine timing is set by state; the planner marks the earliest legal date for you.','Germany':'Register '+a.dog+' for Hundesteuer with your city within the first weeks; liability insurance is required in several states.','Australia':'Council registration is due within weeks of arrival; desexing discounts vary by council.','Canada':'Municipal licence within 30 days in most cities; the vet records go on the licence form.','Türkiye':'Mikroçip ve PetVet kaydı zorunlu; ilk kuduz aşısı 3. ayda.'}[a.country]||'Check microchip registration and local licence rules this week.'}</p></div></div>`},
+    {eb:'Something only yours',h:'A growth record',body:`<p class="letter">Week by week, ${a.dog}'s weight against the ${a.size}-breed curve, with a photo slot each Sunday. At ${adult}, the planner prints the whole year as one page.</p>`}
+   ]};
+ }},
+garden:{title:'The Garden Year',blurb:'Sowing dates from your frost date and your crops',color:'#2f5a46',price:'$19',
+ q:[
+  {k:'name',q:"What should we call your garden?",hint:'Your name, or the garden\'s.',type:'text',ph:"Anna's allotment"},
+  {k:'frost',q:'When is your last spring frost, roughly?',hint:'Every sowing date is counted from this.',type:'choice',options:[['02-15','Mid February'],['03-15','Mid March'],['04-15','Mid April'],['05-15','Mid May'],['none','We get no frost']]},
+  {k:'space',q:'Where are you growing?',type:'choice',options:[['balcony','Balcony / containers'],['beds','Raised beds'],['plot','Open ground / allotment'],['green','Greenhouse or polytunnel']]},
+  {k:'crops',q:'Pick the crops you want most',hint:'Choose up to four; each one gets its own dated row.',type:'multi',max:4,options:[['tomato','Tomatoes'],['pepper','Peppers'],['lettuce','Salad leaves'],['beans','Beans'],['courgette','Courgettes'],['herbs','Herbs'],['carrot','Carrots'],['potato','Potatoes']]},
+  {k:'country',q:'Where is the garden?',...cSel},
+  {k:'time',q:'How much time per week?',type:'choice',options:[['1','About an hour'],['3','Two to four hours'],['6','Most of a weekend']]},
+  {k:'goal',q:'What matters most?',type:'choice',options:[['food','Feeding the household'],['beauty','Beauty and calm'],['kids','Growing with children'],['learn','Learning to garden']]}
+ ],
+ build(a){
+  const year=today.getFullYear()+(today.getMonth()>5?1:0);
+  const frost=a.frost==='none'?new Date(year,1,1,12):new Date(year+'-'+a.frost+'T12:00:00');
+  const C={tomato:['Tomatoes',-42,14,120],pepper:['Peppers',-56,21,130],lettuce:['Salad leaves',-28,-14,50],beans:['Beans',0,7,70],courgette:['Courgettes',-21,14,60],herbs:['Herbs',-28,7,60],carrot:['Carrots',null,-14,75],potato:['Potatoes',null,-21,100]};
+  const rows=(a.crops||[]).map(k=>C[k]).filter(Boolean);
+  const cover=a.frost==='none'?'There is no frost to wait for, so the plan runs on heat and daylight instead; the sowing calendar is the mild-climate version.':'Everything below is counted from your '+fmtS(frost)+' frost date.';
+  return {eyebrow:'Garden Year Planner',title:a.name,sub:`${year} season · ${a.space} · ${a.country}`,
+   spreads:[
+    {eb:'Computed from your frost date',h:'Your sowing calendar',body:`<p class="lead">${cover}</p><div class="rows"><div>${rows.map(r=>kv(r[0]+(r[1]===null?' · sow outdoors':' · sow indoors'),fmtS(addDays(frost,r[1]===null?r[2]:r[1])))).join('')||kv('No crops chosen','–')}</div><div>${rows.map(r=>kv(r[0]+' · first harvest',fmtS(addDays(frost,(r[1]===null?r[2]:r[1])+r[3])))).join('')}</div></div>`},
+    {eb:'A sample week',h:'Week of '+fmtS(addDays(frost,-21)),body:`<p class="lead">${{balcony:'Containers warm up fast and dry out faster; this week moves the tender sowings to the sunniest rail.',beds:'Raised beds are workable a fortnight before open ground; this week they get their first direct sowings.',plot:'Open ground is still cold; this week is for indoor sowings and bed preparation.',green:'Under cover you are three weeks ahead of the plan outside; this week the first tomatoes go in.'}[a.space]}<span class="tag">${a.goal==='kids'?'with children':a.goal}</span></p><div class="rows"><div><h4>${a.time==='1'?'The one-hour list':a.time==='3'?'This week, ~3 hours':'A full weekend'}</h4><ul><li>${rows[0]?'Sow '+rows[0][0].toLowerCase()+(rows[0][1]===null?' direct':' on the windowsill'):'Prepare the first bed'}</li><li>${a.goal==='kids'?'Children\'s job: label the pots':a.goal==='food'?'Plan succession sowings two weeks apart':a.goal==='beauty'?'Mark where the flowers go between the crops':'Keep the sowing diary (page 4)'}</li>${a.time!=='1'?'<li>Turn in compost where the beans will go</li>':''}</ul></div><div><h4>${a.country} note</h4><p style="font-size:.95rem">${{'United Kingdom':'Check your postcode\'s RHS hardiness zone; this plan assumes H4 and shifts a week either way.','United States':'The USDA zone for your ZIP sets the frost date; verify it against your local extension office.','Germany':'Eisheiligen (11–15 May) is the traditional safe date for tender crops; the plan respects it.','Australia':'Seasons are flipped; the calendar is built for a Southern-Hemisphere spring.','Türkiye':'Ege ve Akdeniz\'de don tarihi Mart ortası; iç bölgelerde Mayıs\'a kadar uzar.'}[a.country]||'Confirm your frost date with a local source; one week of error moves every row.'}</p></div></div>`},
+    {eb:'Something only yours',h:'The harvest ledger',body:`<p class="letter">One line per harvest: what, how much, how it tasted. At the end of ${year}, ${a.name} gets a one-page year that tells you what to grow more of.</p>`}
+   ]};
+ }}
+};
+function kv(k,v){return `<div class="kv"><span>${k}</span><span>${v}</span></div>`;}
+function pct(b,p){return ' $'+Math.round(b*p).toLocaleString('en-US');}
+function ceremonyTitle(c){return {civil:'A civil ceremony',religious:'A religious ceremony',both:'Two ceremonies, one plan',elope:'Just the two of you'}[c];}
+function ord(n){return n%10===1&&n!==11?'st':n%10===2&&n!==12?'nd':n%10===3&&n!==13?'rd':'th';}
+
+/* ---------- HOME ---------- */
+const glyphs={gym:'No. 01',pregnancy:'No. 02',wedding:'No. 03',baby:'No. 04',puppy:'No. 05',garden:'No. 06'};
+$('cards').innerHTML=Object.entries(M).map(([k,m])=>`<button class="card" data-m="${k}" style="--cc:${m.color}"><span class="glyph">${glyphs[k]}</span><h3>${m.title}</h3><p>${m.blurb}</p><div class="meta"><span><i></i>${m.q.length} questions</span><b>${m.price}</b></div></button>`).join('');
+$('start').addEventListener('click',()=>$('moments').scrollIntoView({behavior:'smooth'}));
+$('cards').addEventListener('click',e=>{const c=e.target.closest('.card');if(c)begin(c.dataset.m);});
+
+/* ---------- Q&A ---------- */
+let cur=null,qi=0,ans={};
+function begin(k){cur=M[k];qi=0;ans={};$('home').hidden=true;$('result').hidden=true;$('ask').hidden=false;render();window.scrollTo({top:0});}
+function render(){
+  const q=cur.q[qi];
+  $('crumbs').innerHTML=cur.q.slice(0,qi).filter(x=>ans[x.k]!==undefined&&ans[x.k]!=='').map(x=>`<span class="crumb">${label(x,ans[x.k])}</span>`).join('');
+  $('qnum').textContent=`${qi+1} of ${cur.q.length} · ${cur.title}`;
+  $('qtext').textContent=q.q;$('qhint').textContent=q.hint||'';
+  $('bar').style.width=(qi/cur.q.length*100)+'%';
+  $('back').hidden=qi===0;
+  const A=$('answer');A.innerHTML='';
+  if(q.type==='text'){const i=el('input');i.type='text';i.id='in-'+q.k;i.placeholder=q.ph||'';i.value=ans[q.k]||'';A.appendChild(i);i.focus();}
+  else if(q.type==='date'){const i=el('input');i.type='date';i.id='in-'+q.k;i.value=ans[q.k]||q.def||'';A.appendChild(i);}
+  else if(q.type==='pair'){const g=el('div');g.style.cssText='display:grid;grid-template-columns:1fr 1fr;gap:20px';const v=ans[q.k]||{};[['a',q.a],['b',q.b]].forEach(([key,def])=>{const l=el('label');l.style.cssText='display:flex;flex-direction:column;gap:4px;font-size:.75rem;letter-spacing:.1em;text-transform:uppercase;font-weight:800;color:var(--muted)';l.textContent=def[0];const i=el('input');i.type='text';i.inputMode='numeric';i.id='in-'+q.k+'-'+key;i.value=v[key]||def[1];l.appendChild(i);g.appendChild(l);});A.appendChild(g);}
+  else if(q.type==='select'){const s=el('select');s.id='in-'+q.k;s.innerHTML=q.options.map(o=>`<option ${ans[q.k]===o?'selected':''}>${o}</option>`).join('');A.appendChild(s);}
+  else{const box=el('div');box.className='opts';const sel=q.type==='multi'?(ans[q.k]||[]):ans[q.k];
+    q.options.forEach(o=>{const b=el('button');b.type='button';b.className='opt';b.dataset.v=o[0];b.innerHTML=`<span>${o[1]}</span>${o[2]?`<small>${o[2]}</small>`:''}`;
+      b.setAttribute('aria-pressed',q.type==='multi'?sel.includes(o[0]):sel===o[0]);
+      b.addEventListener('click',()=>{if(q.type==='multi'){let s=ans[q.k]||[];s=s.includes(o[0])?s.filter(x=>x!==o[0]):(s.length<(q.max||99)?[...s,o[0]]:s);ans[q.k]=s;[...box.children].forEach(c=>c.setAttribute('aria-pressed',s.includes(c.dataset.v)));}
+        else{ans[q.k]=o[0];[...box.children].forEach(c=>c.setAttribute('aria-pressed',c===b));setTimeout(next,220);}});
+      box.appendChild(b);});
+    A.appendChild(box);}
+}
+function label(q,v){if(q.type==='date')return fmtS(new Date(v+'T12:00:00'));if(q.type==='pair')return v.a+' cm · '+v.b+' kg';if(q.type==='multi')return v.map(x=>q.options.find(o=>o[0]===x)[1]).join(', ');if(q.type==='choice'){const o=q.options.find(o=>o[0]===v);return o?o[1]:v;}return v;}
+function el(t){return document.createElement(t);}
+function next(){
+  const q=cur.q[qi];
+  if(q.type==='pair'){const a=$('in-'+q.k+'-a').value.trim(),b=$('in-'+q.k+'-b').value.trim();if(!(+a>0&&+b>0)){$('in-'+q.k+'-a').focus();return;}ans[q.k]={a,b};}
+  else if(q.type==='text'||q.type==='date'||q.type==='select'){const v=$('in-'+q.k).value.trim();if(!v&&!q.opt){$('in-'+q.k).focus();return;}ans[q.k]=v;}
+  else if(ans[q.k]===undefined||(q.type==='multi'&&!ans[q.k].length))return;
+  qi++; if(qi<cur.q.length)render(); else generate();
+}
+$('next').addEventListener('click',next);
+$('back').addEventListener('click',()=>{if(qi>0){qi--;render();}});
+document.addEventListener('keydown',e=>{if(e.key==='Enter'&&!$('ask').hidden&&e.target.tagName!=='BUTTON'){e.preventDefault();next();}});
+
+/* ---------- GENERATE ---------- */
+function generate(){
+  $('ask').hidden=true;$('gen').hidden=false;window.scrollTo({top:0});
+  const lines=['Counting the dates from your answers…','Sending your answers to the writer…','Writing pages for '+(ans.name||ans.names||ans.baby||ans.dog||'you')+'…','Setting the cover…'];
+  let i=0;const t=()=>{$('gen-p').textContent=lines[i];i++;if(i<lines.length)setTimeout(t,900);else setTimeout(show,900);};t();
+}
+function show(){
+  const r=cur.build(ans);
+  $('gen').hidden=true;$('result').hidden=false;
+  $('cover').style.setProperty('--cv',cur.color);$('r-eyebrow').textContent=r.eyebrow;$('r-title').innerHTML=r.title;$('r-sub').textContent=r.sub;$('price').textContent=cur.price;
+  if(unlocked){$('buy-h').innerHTML='Unlocked with your Etsy code.<span class="unlocked">full edition</span>';$('buy-p').textContent='Your full planner is being written now. The link also goes to your Etsy email. This code is now used.';$('buybtn').textContent='Open my planner';$('price').textContent='✓';}else{$('buy-h').textContent='This is a free preview.';$('buy-p').textContent="The full edition runs to every week and every page. Buy on Etsy, enter the code here, and it's yours within a minute: interactive online plus a printable PDF.";$('buybtn').textContent='Get it on Etsy';$('price').textContent=cur.price;}
+  $('spreads').innerHTML=r.spreads.map(s=>`<div class="spread"><p class="eyebrow">${s.eb}</p><h3>${s.h}</h3>${s.body}</div>`).join('');
+  window.scrollTo({top:0});
+}
+let unlocked=false;
+$('havecode').addEventListener('click',()=>{$('home').hidden=true;$('code').hidden=false;$('codein').focus();window.scrollTo({top:0});});
+$('codeback').addEventListener('click',()=>{$('code').hidden=true;$('home').hidden=false;});
+$('codego').addEventListener('click',()=>{const v=$('codein').value.trim().toUpperCase();if(v==='DM-2026-TEST'){unlocked=true;$('codemsg').textContent='Code accepted. Pick your planner; this code unlocks one edition.';setTimeout(()=>{$('code').hidden=true;$('home').hidden=false;$('moments').scrollIntoView();},900);}else if(v==='DM-2026-USED'){$('codemsg').textContent='This code was already used on 28 Oct. Need a change to that planner? Reply to your Etsy order.';}else{$('codemsg').textContent='Code not found. Check the PDF from your Etsy download.';}});
+$('codein').addEventListener('keydown',e=>{if(e.key==='Enter')$('codego').click();});
+$('restart').addEventListener('click',()=>{$('result').hidden=true;$('home').hidden=false;window.scrollTo({top:0});});
+})();
+</script>
